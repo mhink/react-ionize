@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "flow && webpack --bail --config config/webpack.main.config.js && electron ./dist/main.js"
+    "start": "webpack --bail --config config/webpack.main.config.js && electron ./dist/main.js",
+    "test": "flow && yarn start"
   },
   "author": "Matt Hink <matt.hink@formidable.com>",
   "license": "MIT",

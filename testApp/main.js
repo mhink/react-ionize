@@ -7,18 +7,14 @@ const FooBar = ({ children }) => {
 };
 
 class IonizeApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleAppReady = this.handleAppReady.bind(this);
-  }
-
-  handleAppReady(event) {
-    console.log(event);
+  componentDidMount() {
+    console.log("IT'S WORKING!");
+    console.log(this._app);
   }
 
   render() {
     return (
-      <app onReady={this.handleAppReady} />
+      <app ref={c => { this._app = c; }} />
     );
   }
 }
