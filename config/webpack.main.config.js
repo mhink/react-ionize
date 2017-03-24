@@ -29,7 +29,7 @@ module.exports = {
   },
   context: paths.src,
   output: {
-    filename: '[name].[hash].js',
+    filename: '[name].js',
     path: paths.dist,
     publicPath: '/',
   },
