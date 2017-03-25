@@ -12,12 +12,7 @@ const handleQuit = () => {
 };
 
 const TestApp = () => (
-  <app>
-    <outer />
-    <portal>
-      <inner>Hello, world</inner>
-    </portal>
-  </app>
+  <app onReady={handleReady} />
 );
 
 Ionize.start(
