@@ -4,10 +4,20 @@ import { map } from 'lodash';
 
 const handleReady = (e) => {
   console.log("App is ready!");
+  console.log(e.sender.isReady());
+};
+
+const handleQuit = () => {
+  console.log("Goodbye!");
 };
 
 const TestApp = () => (
-  <listen onReady={handleReady} />
+  <app>
+    <outer />
+    <portal>
+      <inner>Hello, world</inner>
+    </portal>
+  </app>
 );
 
 Ionize.start(
