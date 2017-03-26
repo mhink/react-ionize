@@ -11,9 +11,41 @@ const handleQuit = () => {
   console.log("Goodbye!");
 };
 
-const TestApp = () => (
-  <app onReady={handleReady} />
-);
+class Bar extends React.Component {
+  componentWillUnmount() {
+    console.log("Bar.componentWillUnmount()");
+  }
+
+  render() {
+    return <foo />
+  }
+}
+
+class TestApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      on: true,
+    };
+  }
+
+  componentDidMount() {
+    console.log("TestApp.componentDidMount");
+    setTimeout(() => {
+      console.log("TestApp.componentDidMount, timeout");
+      this.setState({ on: false });
+    }, 1000);
+  }
+
+  render() {
+    return <app onReady={handleReady}>
+      <foo />
+      { this.state.on &&
+        <Bar />
+      }
+    </app>
+  }
+}
 
 Ionize.start(
   <TestApp />,
