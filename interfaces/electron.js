@@ -4,6 +4,7 @@ declare module 'electron' {
   );
   declare type ElectronApp = {|
     on: ($SupportedAppEvent, Function) => ElectronApp,
+    removeListener: (string, Function) => ElectronApp,
   |};
 
   declare var exports: {

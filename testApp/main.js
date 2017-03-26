@@ -30,15 +30,15 @@ class TestApp extends React.Component {
   }
 
   componentDidMount() {
-    console.log("TestApp.componentDidMount");
     setTimeout(() => {
-      console.log("TestApp.componentDidMount, timeout");
       this.setState({ on: false });
     }, 1000);
   }
 
   render() {
-    return <app onReady={handleReady}>
+    return <app 
+    ref={c => {this._app = c; }}
+    onReady={handleReady}>
       <foo />
       { this.state.on &&
         <Bar />
