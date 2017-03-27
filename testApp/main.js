@@ -1,5 +1,5 @@
 import React from 'react';
-import Ionize from '../lib/IonizeFiber';
+import Ionize from 'ionize';
 import { BrowserWindow } from 'electron';
 
 import 'index.html';
