@@ -9,8 +9,8 @@ function handleReady() {
 class TestApp extends React.Component {
   constructor(props) {
     super(props);
-    this.handleReadyToShow = this.handleReadyToShow.bind(this);
-    this.handleMainWindowClosing = this.handleMainWindowClosing.bind(this);
+    this.handleAppReady = this.handleAppReady.bind(this);
+    this.handleShow = this.handleShow.bind(this);
 
     this.state = {
       isWindowReady: false,
@@ -18,16 +18,16 @@ class TestApp extends React.Component {
     };
   }
 
-  handleMainWindowClosing(e) {
-    this.setState({
-      isClosing: true,
-    });
+  handleAppReady() {
+    setTimeout(() => {
+      this._appDialog.show();
+    }, 500);
   }
 
-  handleReadyToShow(e) {
-    this.setState({
-      mainWindowReady: true,
-    });
+  handleShow() {
+    setTimeout(() => {
+      this._windowDialog.show();
+    }, 1000);
   }
 
   render() {
@@ -37,19 +37,17 @@ class TestApp extends React.Component {
     } = this.state;
 
     return (
-      <app>
-
+      <app onReady={this.handleAppReady}>
+        <dialog ref={c => { this._appDialog = c }} />
         <window
           file='index.html'
           onReadyToShow={() => this.setState({ isWindowReady: true })}
           onClose={() => this.setState({ isWindowClosing: true })}
           show={isWindowReady}
-        />
-
-        <dialog
-          show={isWindowClosing}
-          message="Goodbye!"
-        />
+          onShow={this.handleShow}
+        >
+          <dialog ref={c => { this._windowDialog = c }} />
+        </window>
       </app>
     );
   }

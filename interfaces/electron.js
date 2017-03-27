@@ -1,22 +1,5 @@
 declare module 'electron' {
-  declare type MessageBoxOptions = {|
-    title?    : string,
-    message?  : string,
-    detail?   : string,
-  |};
-
-  declare type ElectronDialog = {|
-    // showOpenDialog: () => void,
-    // showSaveDialog: () => void,
-    // showErrorBox:   () => void,
-
-    showMessageBox: (
-      ?BrowserWindow,
-      ?MessageBoxOptions,
-    ) => void
-  |};
-
-  declare var dialog: ElectronDialog;
+  declare var dialog: any;
 
   declare type ElectronApp = {|
     isReady: () => boolean,
