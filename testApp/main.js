@@ -8,53 +8,54 @@ function handleReady() {
   console.log("window is ready to show");
 }
 
+const SIZES = [
+  [ 200, 200],
+  [ 300, 300],
+  [ 400, 400],
+  [ 300, 300],
+];
+
+const POSITIONS = [
+  [ 120, 120],
+  [ 120, 200],
+  [ 200, 200],
+  [ 200, 120],
+];
+
 class TestApp extends React.Component {
   constructor(props) {
     super(props);
-    this.handleAppReady = this.handleAppReady.bind(this);
-    this.handleShow = this.handleShow.bind(this);
-
     this.state = {
-      isWindowReady: false,
-      isWindowClosing: false,
+      posIx: 0
     };
   }
 
-  handleAppReady() {
-    setTimeout(() => {
-      this._appDialog.show("This is a global dialog!");
-    }, 2000);
+  componentDidMount() {
+    this.timer = setTimeout(() => {
+      this.setState({
+        posIx: ((this.state.posIx + 1) % 4)
+      });
+    }, 1000);
   }
 
-  handleShow() {
-    setTimeout(() => {
-      this._windowDialog.show("This is a window dialog!");
-    }, 5000);
+  componentDidUpdate() {
+    this.timer = setTimeout(() => {
+      this.setState({
+        posIx: ((this.state.posIx + 1) % 4)
+      });
+    }, 1000);
   }
 
   render() {
-    const {
-      isWindowReady,
-      isWindowClosing,
-    } = this.state;
+    const { posIx } = this.state;
 
     return (
-      <app onReady={this.handleAppReady}>
-        <menu id="a">
-          <menu id="b">
-          </menu>
-        </menu>
-
-        <dialog ref={c => { this._appDialog = c }} />
-        <window
+      <app>
+        <window show
           file="index.html"
-          onReadyToShow={() => this.setState({ isWindowReady: true })}
-          onClose={() => this.setState({ isWindowClosing: true })}
-          show={isWindowReady}
-          onShow={this.handleShow}
-        >
-          <dialog ref={c => { this._windowDialog = c }} />
-        </window>
+          position={POSITIONS[posIx]}
+          size={SIZES[posIx]}
+        />
       </app>
     );
   }
