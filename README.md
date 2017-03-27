@@ -4,12 +4,31 @@ A React Fiber renderer for Electron apps
 Ionize lets you build [Electron](https://electron.atom.io) applications in a
 declarative style, much like you'd build a web-based React application.
 
+## Hello, world!
+```
+import React from 'react';
+
+let dialog;
+
+function sayHello() {
+  if (dialog) {
+    dialog.show("Hello, world!");
+  }
+}
+
+Ionize.start(
+  <app onReady={sayHello}>
+    <dialog ref={c => { dialog = c; }} />
+  </app>
+);
+```
+
 ## Running the Demo
 * `yarn install`
 * `yarn start`
 
 ## API
-`Ionize.start(element, [callback])`
+### `Ionize.start(element, [callback])`
 
 Starts up an Electron application under Ionize. (Note: this will wait on the
 'ready' Electron event before starting to render any elements.)
@@ -78,20 +97,3 @@ In progress!
 
 Here's a simple 'Hello, world!' app.
 
-```
-import React from 'react';
-
-let dialog;
-
-function sayHello() {
-  if (dialog) {
-    dialog.show("Hello, world!");
-  }
-}
-
-Ionize.start(
-  <app onReady={sayHello}>
-    <dialog ref={c => { dialog = c; }} />
-  </app>
-);
-```
