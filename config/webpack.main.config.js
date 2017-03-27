@@ -40,6 +40,9 @@ module.exports = {
       paths.lib,
       'node_modules'
     ],
+    alias: {
+      'ionize': path.resolve(paths.lib, 'IonizeFiber.js')
+    }
   },
   module: {
     rules: [
