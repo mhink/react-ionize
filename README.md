@@ -10,6 +10,7 @@ declarative style, much like you'd build a web-based React application.
 
 ## API
 `Ionize.start(element, [callback])`
+
 Starts up an Electron application under Ionize. (Note: this will wait on the
 'ready' Electron event before starting to render any elements.)
 
@@ -21,7 +22,7 @@ you're unfamiliar with React- for instance, if you want a window to actually
 go away when you close it, you need to re-render its container and remove the
 window!
 
-`<app />`
+### `<app />`
 Attachment point for event handlers related to the global app. Not strictly
 necessary if you don't need to register any of these (since React Fiber now
 supports multiple children without a parent element).
@@ -33,7 +34,7 @@ least, they will be once I get a chance to implement them.)
 * Event Handlers
   * onReady- Fired immediately when the component is mounted.
 
-`<window />`
+### `<window />`
 Represents an Electron BrowserWindow object.
 
 * file
@@ -59,7 +60,7 @@ Represents an Electron BrowserWindow object.
   * onFocus
   * onShow
 
-`<dialog />`
+### `<dialog />`
 This is an odd duck. Since Electron's `dialog` API is more of a functional
 interface, I'm experimenting with an idea you could call a 'smart ref'- in
 other words, obtaining a ref to this element gives you an object which you can
@@ -70,7 +71,7 @@ When mounted within a `<window />` element, calling `show()` on this will pop
 up a modal dialog _in that window_. Otherwise, it will pop up a modal dialog 
 not linked to that window.
 
-`<menu />`
+### `<menu />`
 In progress!
 
 ## Examples
