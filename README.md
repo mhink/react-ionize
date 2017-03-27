@@ -2,6 +2,8 @@
 Ionize lets you build [Electron](https://electron.atom.io) applications in a
 declarative style, much like you'd build a web-based React application.
 
+https://cloud.githubusercontent.com/assets/780461/24381284/654ecaa4-1304-11e7-8539-f20d93d2fcf0.gif
+
 ## Hello, world!
 ```
 import React from 'react';
