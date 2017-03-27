@@ -92,8 +92,3 @@ not linked to that window.
 
 ### `<menu />`
 In progress!
-
-## Examples
-
-Here's a simple 'Hello, world!' app.
-
