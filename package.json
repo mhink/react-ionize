@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack --bail --config config/webpack.main.config.js && electron ./dist/main.js",
+    "build": "webpack --bail --config config/webpack.main.config.js",
     "test": "flow && yarn start"
   },
   "author": "Matt Hink <matt.hink@formidable.com>",
@@ -26,6 +27,7 @@
     "css-loader": "^0.27.3",
     "electron-builder": "^16.2.0",
     "express": "^4.15.2",
+    "file-loader": "^0.10.1",
     "flow-bin": "0.38.0",
     "html-webpack-plugin": "^2.28.0",
     "json-loader": "^0.5.4",
@@ -34,6 +36,7 @@
     "postcss-smart-import": "^0.6.10",
     "react-dom": "16.0.0-alpha.5",
     "style-loader": "^0.16.0",
+    "url-loader": "^0.5.8",
     "webpack": "^2.3.1",
     "webpack-dev-middleware": "^1.10.1"
   }

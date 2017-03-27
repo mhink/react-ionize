@@ -2,6 +2,8 @@ import React from 'react';
 import Ionize from '../lib/IonizeFiber';
 import { BrowserWindow } from 'electron';
 
+import 'index.html';
+
 function handleReady() {
   console.log("window is ready to show");
 }
@@ -38,9 +40,14 @@ class TestApp extends React.Component {
 
     return (
       <app onReady={this.handleAppReady}>
+        <menu id="a">
+          <menu id="b">
+          </menu>
+        </menu>
+
         <dialog ref={c => { this._appDialog = c }} />
         <window
-          file='index.html'
+          file="index.html"
           onReadyToShow={() => this.setState({ isWindowReady: true })}
           onClose={() => this.setState({ isWindowClosing: true })}
           show={isWindowReady}

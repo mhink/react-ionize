@@ -44,6 +44,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.html$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].html'
+          }
+        }
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
