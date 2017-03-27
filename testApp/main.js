@@ -22,14 +22,14 @@ class TestApp extends React.Component {
 
   handleAppReady() {
     setTimeout(() => {
-      this._appDialog.show();
-    }, 500);
+      this._appDialog.show("This is a global dialog!");
+    }, 2000);
   }
 
   handleShow() {
     setTimeout(() => {
-      this._windowDialog.show();
-    }, 1000);
+      this._windowDialog.show("This is a window dialog!");
+    }, 5000);
   }
 
   render() {
