@@ -36,8 +36,8 @@ Generally speaking, the presence of an Ionize element in your component tree
 indicates that you _want_ it to be there, and that Ionize should ensure its
 presence when rendering. This can lead to slightly surprising behavior if
 you're unfamiliar with React- for instance, if you want a window to actually
-go away when you close it, you need to re-render its container and remove the
-window!
+go away when you close it, you need to make sure that the corresponding `<window/>`
+element actually gets unmounted!
 
 ### `<app />`
 Attachment point for event handlers related to the global app. Not strictly
