@@ -7,17 +7,17 @@ declarative style, much like you'd build a web-based React application.
 ## Hello, world!
 ```
 import React from 'react';
+import Ionize from 'ionize';
 
+let app;
 let dialog;
 
 function sayHello() {
-  if (dialog) {
-    dialog.show("Hello, world!");
-  }
+  dialog.show("Hello, Ionize!", () => app.quit());
 }
 
 Ionize.start(
-  <app onReady={sayHello}>
+  <app ref={c => { app = c; }} onReady={sayHello}>
     <dialog ref={c => { dialog = c; }} />
   </app>
 );
