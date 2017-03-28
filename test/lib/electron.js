@@ -43,6 +43,28 @@ export const BrowserWindow = () => {
   return rval;
 }
 
+class _Menu {
+  static setApplicationMenu;
+};
+
+let i_menu = 0;
+export let menus = [
+  new _Menu()
+];
+
+export const Menu = () => {
+  const rval = menus[i_menu];
+
+  i_menu += 1;
+  if (!menus[i_menu]) {
+    menus.push(new _Menu())
+  }
+
+  return rval;
+}
+
+Menu.setApplicationMenu = () => {}
+
 export const ElectronTestUtils = {
   getWindow(i: number) {
     if (!windows[i]) {
@@ -51,8 +73,16 @@ export const ElectronTestUtils = {
     return windows[i];
   },
 
+  getMenu(i: number) {
+    if (!menus[i]) {
+      menus[i] = new _Menu();
+    }
+    return menus[i];
+  },
+
   reset: () => {
     i_win = 0;
+    i_menu = 0;
     windows = [
       new _BrowserWindow()
     ];
