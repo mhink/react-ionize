@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ionize, IonizeRenderer } from 'ionize';
+import { Ionize } from 'ionize';
 import {
   app as electronApp,
   ElectronTestUtils
@@ -7,23 +7,24 @@ import {
 
 describe('<app />', function() {
   beforeEach(() => {
+    Ionize.reset();
     ElectronTestUtils.reset();
   });
 
   describe('props', function() {
     describe('onReady', function() {
-      it("should be triggered when the app is first mounted", function() {
+      it("should be triggered when the app is first mounted", function(done) {
         let onReadySpy = sinon.spy();
 
         electronApp.test_makeReady();
 
-        IonizeRenderer.syncUpdates(() => {
-          Ionize.start(
-            <app onReady={onReadySpy} />
-          );
-        });
-
-        expect(onReadySpy).to.have.been.calledOnce;
+        Ionize.start(
+          <app onReady={onReadySpy} />,
+          () => {
+            expect(onReadySpy).to.have.been.calledOnce;
+            done();
+          }
+        );
       });
     });
   });
