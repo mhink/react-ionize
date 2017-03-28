@@ -6,6 +6,8 @@ declare module 'electron' {
     on: (string, Function) => ElectronApp,
     once: (string, Function) => ElectronApp,
     removeListener: (string, Function) => ElectronApp,
+
+    test_makeReady: () => void,
   |};
 
   declare var app: ElectronApp;
@@ -23,5 +25,12 @@ declare module 'electron' {
     id: number;
 
     webContents: any; // TODO
+    setPosition: (number, number, ?boolean) => void;
+    setSize: (number, number, ?boolean) => void;
   }
+
+  declare var ElectronTestUtils: {|
+    getWindow: (number) => BrowserWindow,
+    reset: () => void,
+  |};
 };

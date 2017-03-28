@@ -3,6 +3,8 @@
 import EventEmitter from 'events';
 
 class ElectronApp extends EventEmitter {
+  _isReady: boolean;
+
   constructor() {
     super();
     this._isReady = false;
@@ -42,7 +44,7 @@ export const BrowserWindow = () => {
 }
 
 export const ElectronTestUtils = {
-  getWindow(i) {
+  getWindow(i: number) {
     if (!windows[i]) {
       windows[i] = new _BrowserWindow();
     }

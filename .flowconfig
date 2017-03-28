@@ -3,6 +3,8 @@
 [include]
 
 [libs]
+flow-typed
 interfaces
 
 [options]
+module.name_mapper='ionize' -> '<PROJECT_ROOT>/lib/IonizeFiber.js'
