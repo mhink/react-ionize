@@ -29,15 +29,20 @@ declare module 'electron' {
     setSize: (number, number, ?boolean) => void;
   }
 
-  declare var ElectronTestUtils: {|
-    getWindow: (number) => BrowserWindow,
-    reset: () => void,
-  |};
-
   declare class Menu {
     static setApplicationMenu: (Menu) => void;
+    append: (MenuItem) => void;
   }
 
   declare class MenuItem {
   }
+
+  declare var ElectronTestUtils: {|
+    getWindow: (number) => BrowserWindow,
+    getMenu: (number) => Menu,
+    getMenuItem: (number) => MenuItem,
+    reset: () => void,
+  |};
+
+
 };

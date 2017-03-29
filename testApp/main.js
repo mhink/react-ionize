@@ -30,31 +30,46 @@ class TestApp extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.timer = setTimeout(() => {
-      this.setState({
-        posIx: ((this.state.posIx + 1) % 4)
-      });
-    }, 1000);
-  }
+  // componentDidMount() {
+  //   this.timer = setTimeout(() => {
+  //     this.setState({
+  //       posIx: ((this.state.posIx + 1) % 4)
+  //     });
+  //   }, 1000);
+  // }
 
-  componentDidUpdate() {
-    this.timer = setTimeout(() => {
-      this.setState({
-        posIx: ((this.state.posIx + 1) % 4)
-      });
-    }, 1000);
-  }
+  // componentDidUpdate() {
+  //   this.timer = setTimeout(() => {
+  //     this.setState({
+  //       posIx: ((this.state.posIx + 1) % 4)
+  //     });
+  //   }, 1000);
+  // }
 
   render() {
     const { posIx } = this.state;
 
     return (
       <app>
+        <menu>
+          <menu label="Electron">
+            <item label="A" />
+            <item label="B" />
+            <item label="C" />
+          </menu>
+          <menu label="Hello">
+            <item label="One" />
+            <item label="Two" />
+            <item label="Three" />
+            <menu label="More menu">
+              <item label="Four" />
+              <item label="Five" />
+              <item label="Six" />
+            </menu>
+          </menu>
+        </menu>
         <window show
           file="index.html"
-          position={POSITIONS[posIx]}
-          size={SIZES[posIx]}
         />
       </app>
     );

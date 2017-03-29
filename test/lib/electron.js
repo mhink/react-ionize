@@ -45,10 +45,28 @@ export const BrowserWindow = () => {
 
 class _Menu {
   _id: number;
+  _children: Array<_MenuItem>;
 
   static setApplicationMenu;
   constructor(i: number) {
     this._id = i;
+    this._children = [];
+  }
+
+  append(menuItem: _MenuItem) {
+    this._children.push(menuItem);
+  }
+
+  flush() {
+    const obj = {
+      items: []
+    };
+
+    for (const child of this._children) {
+      obj.items.push(child.flush())
+    }
+
+    return obj;
   }
 };
 
@@ -70,6 +88,49 @@ export const Menu = () => {
 
 Menu.setApplicationMenu = () => {}
 
+
+class _MenuItem {
+  _id: number;
+  opts: {
+    submenu?: (_Menu)
+  };
+  constructor(i: number) {
+    this._id = i;
+  }
+
+  _reconstruct(opts: Object) {
+    this.opts = opts;
+  }
+
+  flush() {
+    const obj = {}
+    if (this.opts.label) {
+      obj.label = this.opts.label;
+    }
+    if(this.opts.submenu) {
+      obj.submenu = this.opts.submenu.flush();
+    }
+    return obj;
+  }
+}
+
+let i_menuItem = 0;
+export let menuItems = [
+  new _MenuItem(i_menuItem)
+];
+
+export const MenuItem = (opts: Object) => {
+  const rval = menuItems[i_menuItem];
+  rval._reconstruct(opts);
+
+  i_menuItem += 1;
+  if (!menuItems[i_menuItem]) {
+    menuItems.push(new _MenuItem(i_menuItem))
+  }
+
+  return rval;
+}
+
 export const ElectronTestUtils = {
   getWindow(i: number) {
     if (!windows[i]) {
@@ -85,11 +146,26 @@ export const ElectronTestUtils = {
     return menus[i];
   },
 
+  getMenuItem(i: number) {
+    if (!menuItems[i]) {
+      menuItems[i] = new _MenuItem(i);
+    }
+    return menuItems[i];
+  },
+
+
   reset: () => {
     i_win = 0;
     i_menu = 0;
+    i_menuItem = 0;
     windows = [
       new _BrowserWindow()
+    ];
+    menus = [
+      new _Menu(0)
+    ];
+    menuItems = [
+      new _MenuItem(0)
     ];
 
     app = new ElectronApp();

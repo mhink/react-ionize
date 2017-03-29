@@ -8,7 +8,7 @@ import {
   Menu
 } from 'electron';
 
-describe.only('<menu />', function() {
+describe('<menu />', function() {
   beforeEach(() => {
     Ionize.reset();
     ElectronTestUtils.reset();
@@ -20,27 +20,12 @@ describe.only('<menu />', function() {
     Menu.setApplicationMenu.restore();
   });
 
-  it.only('should properly mount the application menu', function(done) {
-    let updatedMenu;
-
-    Ionize.chain(
-      <menu ref={ c => { updatedMenu = c; }} />,
-      <menu ref={ c => { updatedMenu = c; }} />,
-      () => {
-        expect(Menu.setApplicationMenu).to.have.been.calledOnce;
-        expect(Menu.setApplicationMenu).to.have.been.calledWith(updatedMenu);
-        done();
-      }
-    );
-  });
-
-  it('should not mount multiple nested menus', function(done) {
-    let rootMenu;
-    let subMenu;
+  it('should only call Menu.setApplicationMenu with the root menu', function(done) {
+    const rootMenu = ElectronTestUtils.getMenu(1);
 
     Ionize.start(
-      <menu ref={c => { rootMenu = c; }}>
-        <menu ref={c => { subMenu = c; }} />,
+      <menu>
+        <menu />
       </menu>,
       () => {
         expect(Menu.setApplicationMenu).to.have.been.calledOnce;
@@ -49,4 +34,42 @@ describe.only('<menu />', function() {
       }
     );
   });
+
+  it('should call rootMenu.append with a MenuItem built from the submenu', function(done) {
+    let rootMenu;
+
+    Ionize.start(
+      <menu ref={c => { rootMenu = c; }}>
+        <menu label="Magic">
+          <item label="One" />
+          <menu label="More Magic">
+            <item label="Two" />
+          </menu>
+        </menu>
+      </menu>,
+      () => {
+        expect(rootMenu.flush())
+        .to.deep.equal({
+          items: [
+            { label: 'Magic',
+              submenu: {
+                items: [
+                  { label: 'One' },
+                  { label: 'More Magic',
+                    submenu: {
+                      items: [
+                        { label: 'Two' }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        });
+        done();
+      }
+    );
+  });
+
 });
