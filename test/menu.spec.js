@@ -9,37 +9,42 @@ import {
 } from 'electron';
 
 describe.only('<menu />', function() {
-  let menuStub;
-
   beforeEach(() => {
     Ionize.reset();
     ElectronTestUtils.reset();
     app.test_makeReady();
-    menuStub = sinon.stub(Menu, 'setApplicationMenu');
+    sinon.stub(Menu, 'setApplicationMenu');
   });
 
   afterEach(() => {
-    menuStub.restore();
+    Menu.setApplicationMenu.restore();
   });
 
-  it('should properly mount the application menu', function(done) {
+  it.only('should properly mount the application menu', function(done) {
+    let updatedMenu;
+
     Ionize.chain(
-      <menu />,
-      <menu />,
+      <menu ref={ c => { updatedMenu = c; }} />,
+      <menu ref={ c => { updatedMenu = c; }} />,
       () => {
-        expect(menuStub).to.have.been.calledOnce;
+        expect(Menu.setApplicationMenu).to.have.been.calledOnce;
+        expect(Menu.setApplicationMenu).to.have.been.calledWith(updatedMenu);
         done();
       }
     );
   });
 
   it('should not mount multiple nested menus', function(done) {
+    let rootMenu;
+    let subMenu;
+
     Ionize.start(
-      <menu>
-        <menu />,
+      <menu ref={c => { rootMenu = c; }}>
+        <menu ref={c => { subMenu = c; }} />,
       </menu>,
       () => {
-        expect(menuStub).to.have.been.calledOnce;
+        expect(Menu.setApplicationMenu).to.have.been.calledOnce;
+        expect(Menu.setApplicationMenu).to.have.been.calledWith(rootMenu);
         done();
       }
     );

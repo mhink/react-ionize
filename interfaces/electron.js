@@ -33,4 +33,11 @@ declare module 'electron' {
     getWindow: (number) => BrowserWindow,
     reset: () => void,
   |};
+
+  declare class Menu {
+    static setApplicationMenu: (Menu) => void;
+  }
+
+  declare class MenuItem {
+  }
 };

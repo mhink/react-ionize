@@ -44,12 +44,17 @@ export const BrowserWindow = () => {
 }
 
 class _Menu {
+  _id: number;
+
   static setApplicationMenu;
+  constructor(i: number) {
+    this._id = i;
+  }
 };
 
 let i_menu = 0;
 export let menus = [
-  new _Menu()
+  new _Menu(i_menu)
 ];
 
 export const Menu = () => {
@@ -57,7 +62,7 @@ export const Menu = () => {
 
   i_menu += 1;
   if (!menus[i_menu]) {
-    menus.push(new _Menu())
+    menus.push(new _Menu(i_menu))
   }
 
   return rval;
@@ -75,7 +80,7 @@ export const ElectronTestUtils = {
 
   getMenu(i: number) {
     if (!menus[i]) {
-      menus[i] = new _Menu();
+      menus[i] = new _Menu(i);
     }
     return menus[i];
   },
