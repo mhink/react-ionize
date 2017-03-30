@@ -104,6 +104,9 @@ class _MenuItem {
 
   flush() {
     const obj = {}
+    if (this.opts.role) {
+      obj.role = this.opts.role;
+    }
     if (this.opts.label) {
       obj.label = this.opts.label;
     }

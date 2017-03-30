@@ -41,7 +41,7 @@ describe('<menu />', function() {
     Ionize.chain(
       <menu>
         <menu ref={c => { subMenu = c;}}>
-          <item key="One" label="One" />
+          <item label="One" />
         </menu>
       </menu>,
       () => {
@@ -56,8 +56,8 @@ describe('<menu />', function() {
       },
       <menu>
         <menu ref={c => { subMenu = c;}}>
-          <item key="One" label="One" />
-          <item key="Two" label="Two" />
+          <item label="One" />
+          <item label="Two" />
         </menu>
       </menu>,
       () => {
@@ -91,50 +91,7 @@ describe('<menu />', function() {
 
   });
 
-  it('should be possible to add an item to the menu', function(done) {
-    let rootMenu;
-
-    Ionize.chain(
-      <menu ref={c => { rootMenu = c;}}>
-        <item key="One" label="One" />
-      </menu>,
-      () => {
-        expect(rootMenu.flush())
-        .to.deep.equal({
-          items: [
-            { label: 'One' }
-          ]
-        });
-      },
-      <menu ref={c => { rootMenu = c;}}>
-        <item key="One" label="One" />
-        <item key="Two" label="Two" />
-      </menu>,
-      () => {
-        expect(rootMenu.flush())
-        .to.deep.equal({
-          items: [
-            { label: 'One' },
-            { label: 'Two' }
-          ]
-        });
-      },
-      <menu ref={c => { rootMenu = c;}}>
-        <item key="One" label="One" />
-      </menu>,
-      () => {
-        expect(rootMenu.flush())
-        .to.deep.equal({
-          items: [
-            { label: 'One' },
-          ]
-        });
-        done();
-      }
-    );
-  });
-
-  it('should be possible to remove an item to the menu', function(done) {
+  it('should be possible to remove an item from the menu', function(done) {
     let rootMenu;
 
     Ionize.chain(
