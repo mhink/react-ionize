@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "EXAMPLE_ENTRY=menu.js webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
-    "build": "webpack --bail --config webpack.lib.config.js",
+    "build": "babel -d lib/ src/",
     "test": "mocha-webpack --webpack-config config/webpack.test.config.js \"test/**/*.spec.js\"",
+    "preversion": "yarn flow && yarn test && yarn build",
+    "postversion": "git push origin --tags",
     "prepublish": "npm run build"
   },
   "author": "Matt Hink <mhink1103@gmail.com>",
@@ -39,6 +41,7 @@
     "windows"
   ],
   "devDependencies": {
+    "babel-cli": "^6.24.0",
     "babel-core": "^6.24.0",
     "babel-loader": "7.0.0-beta.1",
     "babel-plugin-check-es2015-constants": "^6.22.0",
