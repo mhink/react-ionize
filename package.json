@@ -1,7 +1,7 @@
 {
   "name": "ionize",
   "version": "1.0.0",
-  "description": "",
+  "description": "An experimental React renderer for Electron apps",
   "main": "index.js",
   "scripts": {
     "start": "EXAMPLE_ENTRY=menu.js webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
@@ -9,12 +9,35 @@
     "test": "mocha-webpack --webpack-config config/webpack.test.config.js \"test/**/*.spec.js\"",
     "prepublish": "npm run build"
   },
-  "author": "Matt Hink <matt.hink@formidable.com>",
+  "author": "Matt Hink <mhink1103@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "electron": "^1.6.2",
     "react": "16.0.0-alpha.5"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhink/ionize"
+  },
+  "bugs": {
+    "url": "https://github.com/mhink/ionize/issues"
+  },
+  "homepage": "https://github.com/mhink/ionize",
+  "files": [
+    "lib",
+    "package.json",
+    "README.md"
+  ],
+  "keywords": [
+    "react",
+    "reactjs",
+    "electron",
+    "desktop",
+    "app",
+    "atom",
+    "osx",
+    "windows"
+  ],
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-loader": "7.0.0-beta.1",
