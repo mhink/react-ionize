@@ -1,37 +1,30 @@
-// Electron Main Process configuration
 const path = require('path');
 const webpack = require('webpack');
 
-const base = path.resolve(__dirname, '..');
-const paths = {
-  base,
-  src     : path.resolve(base, 'testApp'),
-  lib     : path.resolve(base, 'lib'),
-  dist    : path.resolve(base, 'dist'),
-  config  : path.resolve(base, 'config'),
-};
-
-const indexUrl = () => {
-  if(process.env.NODE_ENV === 'development') {
-    return "http://0.0.0.0:8080/";
-  }
+if (process.env.EXAMPLE_ENTRY === undefined) {
+  throw new Error('You must provide an example entry file!');
 }
 
+const base = path.resolve(__dirname);
+const paths = {
+  base,
+  src     : path.resolve(base, 'examples'),
+  lib     : path.resolve(base, 'src'),
+  dist    : path.resolve(base, 'dist'),
+};
+
+// Configuration for Ionize examples
 module.exports = {
   performance: {
     hints: false,
   },
-
   target: 'electron',
   devtool: 'source-map',
-  entry: {
-    main: 'main.js'
-  },
+  entry: process.env.EXAMPLE_ENTRY,
   context: paths.src,
   output: {
-    filename: '[name].js',
+    filename: 'main.js',
     path: paths.dist,
-    publicPath: '/',
   },
   resolve: {
     extensions: ['.js'],
@@ -41,8 +34,15 @@ module.exports = {
       'node_modules'
     ],
     alias: {
-      'ionize': path.resolve(paths.lib, 'IonizeFiber.js')
+      'ionize': path.resolve(paths.lib, 'index.js')
     }
+  },
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
+  externals: {
+    '7zip': 'commonjs 7zip'
   },
   module: {
     rules: [
@@ -72,19 +72,4 @@ module.exports = {
       },
     ],
   },
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
-  externals: {
-    '7zip': 'commonjs 7zip'
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-        INDEX_URL: JSON.stringify(indexUrl())
-      },
-    }),
-  ],
 };

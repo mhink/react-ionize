@@ -8,7 +8,7 @@ import IonizeContainer from './IonizeContainer';
 
 export const IonizeRenderer = ReactFiberReconciler(IonizeHostConfig);
 
-export const Ionize: {|
+export const IonizeFiber: {|
   container : ?IonizeContainer,
   root      : ?FiberRoot,
   start     : (React$Element<any>, ?Function) => void,
@@ -64,5 +64,3 @@ export const Ionize: {|
     delete this.root;
   }
 };
-
-export default Ionize;
