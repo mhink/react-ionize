@@ -2,21 +2,13 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const base = path.resolve(__dirname, '..');
+const base = path.resolve(__dirname);
 const paths = {
   base,
   src     : path.resolve(base, 'test'),
-  lib     : path.resolve(base, 'lib'),
+  lib     : path.resolve(base, 'src'),
   libtest : path.resolve(base, 'test', 'lib'),
-  dist    : path.resolve(base, 'dist'),
-  config  : path.resolve(base, 'config'),
 };
-
-const indexUrl = () => {
-  if (process.env.NODE_ENV === 'development') {
-    return "http://0.0.0.0:8080/";
-  }
-}
 
 module.exports = {
   performance: {
@@ -34,7 +26,7 @@ module.exports = {
     ],
     alias: {
       'electron': path.resolve(paths.libtest, 'electron.js'),
-      'ionize': path.resolve(paths.lib, 'IonizeFiber.js'),
+      'ionize': path.resolve(paths.lib, 'index.js'),
     }
   },
   module: {

@@ -1,5 +1,6 @@
 // @flow
 
+console.log("Loading dummy electron.js");
 import EventEmitter from 'events';
 
 class ElectronApp extends EventEmitter {

@@ -1,3 +1,7 @@
-import { IonizeFiber } from './IonizeFiber.js';
+import {
+  IonizeFiber,
+  IonizeRenderer,
+} from './IonizeFiber.js';
 
+export { IonizeRenderer };
 export default IonizeFiber;

@@ -48,12 +48,12 @@ export const IonizeFiber: {|
 
   chain(el, cbOrEl, ...restPairs) {
     if (el) {
-      Ionize.update(el, () => {
+      this.update(el, () => {
         if (typeof cbOrEl === 'function') {
           cbOrEl();
-          Ionize.chain(...restPairs);
+          this.chain(...restPairs);
         } else if (typeof cbOrEl === 'object') {
-          Ionize.chain(cbOrEl, ...restPairs);
+          this.chain(cbOrEl, ...restPairs);
         }
       });
     }
