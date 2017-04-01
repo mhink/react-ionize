@@ -1,5 +1,5 @@
 import React from 'react';
-import Ionize from 'ionize';
+import Ionize from 'react-ionize';
 import { BrowserWindow } from 'electron';
 import { map, range } from 'lodash';
 

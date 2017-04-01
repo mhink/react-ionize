@@ -34,7 +34,7 @@ module.exports = {
       'node_modules'
     ],
     alias: {
-      'ionize': path.resolve(paths.lib, 'index.js')
+      'react-ionize': path.resolve(paths.lib, 'index.js')
     }
   },
   node: {

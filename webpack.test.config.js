@@ -26,7 +26,7 @@ module.exports = {
     ],
     alias: {
       'electron': path.resolve(paths.libtest, 'electron.js'),
-      'ionize': path.resolve(paths.lib, 'index.js'),
+      'react-ionize': path.resolve(paths.lib, 'index.js'),
     }
   },
   module: {

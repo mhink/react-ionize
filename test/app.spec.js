@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import Ionize from 'ionize';
+import Ionize from 'react-ionize';
 import {
   app as electronApp,
   ElectronTestUtils

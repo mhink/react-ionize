@@ -1,5 +1,5 @@
 import React from 'react';
-import Ionize from 'ionize';
+import Ionize from 'react-ionize';
 
 let app;
 let dialog;

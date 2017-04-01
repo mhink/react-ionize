@@ -2,7 +2,7 @@
   "name": "react-ionize",
   "version": "1.1.0",
   "description": "An experimental React renderer for Electron apps",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "start": "EXAMPLE_ENTRY=menu.js webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
     "build": "babel -d lib/ src/",
