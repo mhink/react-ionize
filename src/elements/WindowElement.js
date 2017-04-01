@@ -72,7 +72,7 @@ export default class WindowElement extends BaseElement {
     }
 
     if (newProps.file) {
-      const filePath = path.resolve(__dirname, newProps.file);
+      const filePath = path.resolve(newProps.file);
       this.window.loadURL(`file://${filePath}`);
     }
 
