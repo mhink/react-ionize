@@ -1,16 +1,30 @@
-# Ionize
-Ionize lets you build [Electron](https://electron.atom.io) applications in a
+# react-ionize
+react-ionize lets you build [Electron](https://electron.atom.io) applications in a
 declarative style, much like you'd build a web-based React application.
 
+## Caveat Developer
+react-ionize is still an EXPERIMENTAL, PRE-ALPHA library, and is not yet
+suitable for for use in a production app! It's a custom renderer built on top
+of the React Fiber reconciliation API, which itself is still under active
+development. (Not to mention, I've got a whole crop of Electron features yet
+to add.)
+
 ## Getting Started
+
 ```
-* yarn add react-ionize
+* yarn add react-ionize 
+* yarn add react-dom@16.0.0-alpha.5
 ```
 
+Take a look at [Ionize Example App](https://github.com/mhink/ionize-example-app) to get started.
+
+
 ## Hello, world!
+This assumes you have an `index.html` present in your jk
+
 ```
 import React from 'react';
-import Ionize from 'ionize';
+import Ionize from 'react-ionize';
 
 let app;
 let dialog;
@@ -22,13 +36,10 @@ function sayHello() {
 Ionize.start(
   <app ref={c => { app = c; }} onReady={sayHello}>
     <dialog ref={c => { dialog = c; }} />
+    <window show path="index.html"
   </app>
 );
 ```
-
-## Running the Demo
-* `yarn install`
-* `yarn start`
 
 ## API
 ### `Ionize.start(element, [callback])`
