@@ -25,14 +25,9 @@ Ionize.start(
         <paste />
         <selectall />
       </submenu>
-      <submenu label="View">
-        <reload />
-        <forcereload />
-        <toggledevtools />
-        <sep />
-        <resetzoom />
-        <zoomin />
-        <zoomout />
+      <submenu label="Custom Menu">
+        <item label="Foo the bars" />
+        <item label="Baz the quuxes" />
         <sep />
         <togglefullscreen />
       </submenu>
@@ -42,6 +37,5 @@ Ionize.start(
       position={[120, 120]}
       size={[300, 300]}
     />
-  </app>,
-  () => console.log("Finished Ionize.start()")
+  </app>
 );
