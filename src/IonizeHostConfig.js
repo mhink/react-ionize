@@ -107,9 +107,7 @@ export type HostContext = {|
   isMenu: boolean,
 |};
 
-const DEFAULT_HOST_CONTEXT: HostContext = ({
-  isMenu: false,
-}: any);
+const DEFAULT_HOST_CONTEXT: HostContext = ({}: any);
 
 export function getRootHostContext(
   rootContainerInstance: IonizeContainer,
@@ -121,13 +119,7 @@ export function getChildHostContext(
   parentHostContext       : HostContext,
   type                    : string,
 ): HostContext {
-  if (type === 'menu' && !parentHostContext.isMenu) {
-    return {
-      isMenu: true
-    };
-  } else {
-    return parentHostContext;
-  }
+  return parentHostContext;
 }
 
 // ----------------------------------------------------------------------

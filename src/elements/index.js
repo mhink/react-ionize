@@ -35,11 +35,10 @@ export function createElectronInstance(
       return new DialogElement(props, container);
     }
     case 'menu': {
-      if (!context.isMenu) {
-        return new MenuElement(props, container);
-      } else {
-        return new SubmenuElement(props, container);
-      }
+      return new MenuElement(props, container);
+    }
+    case 'submenu': {
+      return new SubmenuElement(props, container);
     }
     default: {
       return new GenericElement(type, props, container);

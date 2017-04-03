@@ -64,19 +64,19 @@ you're unfamiliar with React- for instance, if you want a window to actually
 go away when you close it, you need to make sure that the corresponding `<window/>`
 element actually gets unmounted!
 
-### `<app />`
+### `<app>`
 Attachment point for event handlers related to the global app. Not strictly
 necessary if you don't need to register any of these (since React Fiber now
 supports multiple children without a parent element).
 
-Generally speaking, children of <app /> are things related to the entire
+Generally speaking, children of `<app>` are things related to the entire
 application: browser windows, dialogs, tray elements, and so forth. (Or at
 least, they will be once I get a chance to implement them.)
 
 * Event Handlers
   * onReady- Fired immediately when the component is mounted.
 
-### `<window />`
+### `<window>`
 Represents an Electron BrowserWindow object.
 
 * file
@@ -102,16 +102,27 @@ Represents an Electron BrowserWindow object.
   * onFocus
   * onShow
 
-### `<dialog />`
+### `<menu>`
+The `<menu>` element defines an Electron application menu.
+
+TODO: When nested inside a `<window>` element, this should attach the menu to
+that window, specifically- and I'd like to have something like a <contextmenu>
+element for right-clicks.
+
+### `<submenu>`
+TBD
+
+### `<item>` and related
+TBD
+
+### `<dialog>`
 This is an odd duck. Since Electron's `dialog` API is more of a functional
 interface, I'm experimenting with an idea you could call a 'smart ref'- in
 other words, obtaining a ref to this element gives you an object which you can
 safely call `show()` on, which makes the appropriate function call based on
-the props you give `<dialog />`.
+the props you give `<dialog>`.
 
-When mounted within a `<window />` element, calling `show()` on this will pop
+When mounted within a `<window>` element, calling `show()` on this will pop
 up a modal dialog _in that window_. Otherwise, it will pop up a modal dialog 
 not linked to that window.
 
-### `<menu />`
-In progress!

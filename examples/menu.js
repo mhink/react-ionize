@@ -1,14 +1,13 @@
 import React from 'react';
 import Ionize from 'react-ionize';
-import { BrowserWindow } from 'electron';
-import { map, range } from 'lodash';
+import path from 'path';
 
 import 'index.html';
 
 Ionize.start(
   <app>
     <menu>
-      <menu label="Electron">
+      <submenu label="Electron">
         <about />
         <sep />
         <hide />
@@ -16,8 +15,8 @@ Ionize.start(
         <unhide />
         <sep />
         <quit />
-      </menu>
-      <menu label="Edit">
+      </submenu>
+      <submenu label="Edit">
         <undo />
         <redo />
         <sep />
@@ -25,8 +24,8 @@ Ionize.start(
         <copy />
         <paste />
         <selectall />
-      </menu>
-      <menu label="View">
+      </submenu>
+      <submenu label="View">
         <reload />
         <forcereload />
         <toggledevtools />
@@ -36,10 +35,10 @@ Ionize.start(
         <zoomout />
         <sep />
         <togglefullscreen />
-      </menu>
+      </submenu>
     </menu>
     <window show
-      file="index.html"
+      file={path.resolve(__dirname, "index.html")}
       position={[120, 120]}
       size={[300, 300]}
     />
