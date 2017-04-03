@@ -20,23 +20,32 @@ Take a look at [Ionize Example App](https://github.com/mhink/ionize-example-app)
 
 
 ## Hello, world!
-This assumes you have an `index.html` present in your jk
 
 ```
 import React from 'react';
 import Ionize from 'react-ionize';
+import path from 'path';
+import fs from 'fs';
 
-let app;
-let dialog;
+const INDEX_HTML_PATH = path.resolve(__dirname, 'index.html');
+const INDEX_HTML_SOURCE = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello, Electron!</title>
+  </head>
+  <body>
+    <h1>Hello, Electron!</h1>
+  </body>
+</html>
+`;
 
-function sayHello() {
-  dialog.show("Hello, Ionize!", () => app.quit());
-}
+fs.writeFileSync(INDEX_HTML_PATH, INDEX_HTML_SOURCE);
 
 Ionize.start(
-  <app ref={c => { app = c; }} onReady={sayHello}>
-    <dialog ref={c => { dialog = c; }} />
-    <window show path="index.html"
+  <app>
+    <window show file={INDEX_HTML_PATH} />
   </app>
 );
 ```
