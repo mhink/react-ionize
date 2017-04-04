@@ -25,7 +25,7 @@ describe('<menu />', function() {
 
     Ionize.start(
       <menu>
-        <menu />
+        <submenu />
       </menu>,
       () => {
         expect(Menu.setApplicationMenu).to.have.been.calledOnce;
@@ -40,9 +40,9 @@ describe('<menu />', function() {
 
     Ionize.chain(
       <menu>
-        <menu ref={c => { subMenu = c;}}>
+        <submenu ref={c => { subMenu = c;}}>
           <item label="One" />
-        </menu>
+        </submenu>
       </menu>,
       () => {
         expect(subMenu.flush())
@@ -55,10 +55,10 @@ describe('<menu />', function() {
         });
       },
       <menu>
-        <menu ref={c => { subMenu = c;}}>
+        <submenu ref={c => { subMenu = c;}}>
           <item label="One" />
           <item label="Two" />
-        </menu>
+        </submenu>
       </menu>,
       () => {
         expect(subMenu.flush())
@@ -72,9 +72,9 @@ describe('<menu />', function() {
         });
       },
       <menu>
-        <menu ref={c => { subMenu = c;}}>
+        <submenu ref={c => { subMenu = c;}}>
           <item key="One" label="One" />
-        </menu>
+        </submenu>
       </menu>,
       () => {
         expect(subMenu.flush())
@@ -129,12 +129,12 @@ describe('<menu />', function() {
 
     Ionize.start(
       <menu ref={c => { rootMenu = c; }}>
-        <menu label="Magic">
+        <submenu label="Magic">
           <item label="One" />
-          <menu label="More Magic">
+          <submenu label="More Magic">
             <item label="Two" />
-          </menu>
-        </menu>
+          </submenu>
+        </submenu>
       </menu>,
       () => {
         expect(rootMenu.flush())
