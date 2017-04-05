@@ -1,6 +1,7 @@
 # react-ionize
-react-ionize lets you build [Electron](https://electron.atom.io) applications in a
-declarative style, much like you'd build a web-based React application.
+[Electron](https://electron.atom.io) applications consist of two types of process: a *main process* which manages the lifecycle of the application, and several *renderer processes*, which display webpages which comprise the application's GUI. It's fairly common to use React and ReactDOM to build a GUI in the renderer process.
+
+react-ionize is a library which lets you use the same React component-based architechure to manage the lifecycle of your application in the Electron main process. It is essentially a replacement for ReactDOM- but instead of flushing component updates to a DOM, it flushes them out to Electron's API. Think React Native for Electron apps.
 
 ## Caveat Developer
 react-ionize is still an EXPERIMENTAL, PRE-ALPHA library, and is not yet
