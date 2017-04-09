@@ -11,30 +11,11 @@ import type { HostContext } from '../IonizeHostConfig';
 import BaseElement from './BaseElement';
 import TextElement from './TextElement';
 import GenericElement from './GenericElement';
-
-const GENERIC_ELEMENT_ROLE_TYPES = [
-  "undo", "redo", "cut", "copy", "paste", "pasteandmatchstyle", "selectall",
-  "delete", "minimize", "close", "quit", "reload", "forcereload",
-  "toggledevtools", "togglefullscreen", "resetzoom", "zoomin", "zoomout"
-];
-
-const OSX_GENERIC_ELEMENT_ROLE_TYPES  = [
-  "about",
-  "hide",
-  "hideothers",
-  "unhide",
-  "startspeaking",
-  "stopspeaking",
-  "front",
-  "zoom",
-  "window",
-  "help",
-  "services",
-];
+import { MenuItemElement } from './MenuItemElement';
 
 export default class SubmenuElement extends BaseElement {
   menuItem: (null | MenuItem);
-  menuElements: Array<BaseElement>;
+  menuElements: Array<SubmenuElement | MenuItemElement>;
 
   getPublicInstance(): (null | MenuItem) {
     return this.menuItem;
@@ -53,7 +34,7 @@ export default class SubmenuElement extends BaseElement {
     child: (BaseElement | TextElement)
   ): void {
     if (child instanceof SubmenuElement
-    ||  child instanceof GenericElement) {
+    ||  child instanceof MenuItemElement) {
       this.menuElements.push(child);
     }
   }
@@ -70,7 +51,11 @@ export default class SubmenuElement extends BaseElement {
   ): void {
     const submenu = new Menu();
 
-    initializeMenuFromElements(submenu, this.menuElements);
+    for (const el of this.menuElements) {
+      if (el.menuItem) {
+        submenu.append(el.menuItem);
+      }
+    }
 
     this.menuItem = new MenuItem({
       label: newProps.label,
@@ -84,7 +69,6 @@ export default class SubmenuElement extends BaseElement {
     rootContainerInstance : IonizeContainer
   ): null | Array<mixed> {
     let updatePayload: Array<mixed> = ['forceCommit', true];
-
     return updatePayload;
   }
 
@@ -92,7 +76,7 @@ export default class SubmenuElement extends BaseElement {
     child                 : (BaseElement | TextElement)
   ): void {
     if (child instanceof SubmenuElement
-    ||  child instanceof GenericElement) {
+    ||  child instanceof MenuItemElement) {
       this.menuElements.push(child);
     }
   }
@@ -102,7 +86,7 @@ export default class SubmenuElement extends BaseElement {
     beforeChild           : (BaseElement | TextElement),
   ): void {
     if (child instanceof SubmenuElement
-    ||  child instanceof GenericElement) {
+    ||  child instanceof MenuItemElement) {
       const ix = this.menuElements.indexOf(child);
       if (ix !== -1) {
         this.menuElements.splice(ix, 1)
@@ -129,48 +113,15 @@ export default class SubmenuElement extends BaseElement {
   ): void {
     const submenu = new Menu();
 
-    initializeMenuFromElements(submenu, this.menuElements);
+    for (const el of this.menuElements) {
+      if (el.menuItem) {
+        submenu.append(el.menuItem);
+      }
+    }
 
     this.menuItem = new MenuItem({
       label: newProps.label,
       submenu
     });
-  }
-}
-
-function initializeMenuFromElements(menu: Menu, menuElements: Array<BaseElement>) {
-  for (const el of menuElements) {
-    let menuItem: (null | MenuItem) = null;
-
-    if (el instanceof SubmenuElement) {
-      menuItem = el.menuItem;
-    }
-
-    if (el instanceof GenericElement) {
-
-      if (el._type === 'sep') {
-        menuItem = new MenuItem({
-          type: 'separator'
-        });
-      } else if (GENERIC_ELEMENT_ROLE_TYPES.indexOf(el._type) !== -1) {
-        menuItem = new MenuItem({
-          role: el._type
-        });
-      } else if (process.platform === 'darwin'
-      && OSX_GENERIC_ELEMENT_ROLE_TYPES.indexOf(el._type) !== -1) {
-        menuItem = new MenuItem({
-          role: el._type
-        });
-      }
-      else {
-        menuItem = new MenuItem({
-          label: el.props.label
-        });
-      }
-    }
-
-    if (menuItem) {
-      menu.append(menuItem);
-    }
   }
 }

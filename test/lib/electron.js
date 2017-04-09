@@ -26,6 +26,13 @@ export let app = new ElectronApp();
 class _BrowserWindow {
   show() {}
   hide() {}
+  on() {}
+  setParentWindow(parentWindow: _BrowserWindow) {}
+  removeAllListeners(eventType: string) {}
+  setPosition(x: number, y: number) {}
+  setMovable(isMovable: boolean) {}
+  setSize(width: number, height: number) {}
+  setResizable(isResizable: boolean) {}
 }
 
 let i_win = 0;

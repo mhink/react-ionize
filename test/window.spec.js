@@ -8,9 +8,6 @@ import {
 } from 'electron';
 
 describe('<window />', function() {
-  let windowRef;
-  const captureRef = { ref: c => { windowRef = c; }}
-
   beforeEach(() => {
     Ionize.reset();
     ElectronTestUtils.reset();
@@ -26,7 +23,7 @@ describe('<window />', function() {
             const show = sinon.stub(win, 'show');
 
             Ionize.start(
-              <window show { ...captureRef} />,
+              <window show />,
               () => {
                 expect(show).to.have.been.calledOnce;
                 done();
@@ -41,7 +38,7 @@ describe('<window />', function() {
             const show = sinon.stub(win, 'show');
 
             Ionize.start(
-              <window {...captureRef} />,
+              <window />,
               () => {
                 expect(show).not.to.have.been.called;
                 done();
@@ -57,11 +54,11 @@ describe('<window />', function() {
               const show = sinon.stub(win, 'show');
 
               Ionize.chain(
-                <window show={false} {...captureRef} />, 
+                <window show={false} />, 
                 () => {
                   expect(show).not.to.have.been.called;
                 },
-                <window show={true} {...captureRef} />,
+                <window show={true} />,
                 () => {
                   expect(show).to.have.been.calledOnce;
                   done();
@@ -77,12 +74,12 @@ describe('<window />', function() {
               const hide = sinon.stub(win, 'hide');
 
               Ionize.chain(
-                <window show={true} {...captureRef} />, 
+                <window show={true} />, 
                 () => {
                   expect(show).to.have.been.calledOnce;
                   expect(hide).not.to.have.been.called;
                 },
-                <window show={false} {...captureRef} />,
+                <window show={false} />,
                 () => {
                   expect(hide).to.have.been.calledOnce;
                   done();

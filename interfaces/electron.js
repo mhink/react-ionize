@@ -16,6 +16,7 @@ declare module 'electron' {
     on: (string, Function) => BrowserWindow;
     once: (string, Function) => BrowserWindow;
     removeListener: (string, Function) => BrowserWindow;
+    removeAllListeners: (string) => BrowserWindow;
     setParentWindow: (?BrowserWindow) => void;
     getParentWindow: () => BrowserWindow;
     show: () => void;
@@ -26,7 +27,9 @@ declare module 'electron' {
 
     webContents: any; // TODO
     setPosition: (number, number, ?boolean) => void;
+    setMovable: (boolean) => void;
     setSize: (number, number, ?boolean) => void;
+    setResizable: (boolean) => void;
   }
 
   declare class Menu {

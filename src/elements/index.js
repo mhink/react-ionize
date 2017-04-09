@@ -3,9 +3,14 @@ import AppElement from './AppElement';
 import WindowElement from './WindowElement';
 import GenericElement from './GenericElement';
 import TextElement from './TextElement';
-import DialogElement from './DialogElement';
 import MenuElement from './MenuElement';
 import SubmenuElement from './SubmenuElement';
+import {
+  SeparatorElement,
+  RoleMenuItemElement,
+  CustomMenuItemElement,
+  isRoleMenuItemType,
+} from './MenuItemElement';
 
 export {
   BaseElement,
@@ -13,7 +18,6 @@ export {
   WindowElement,
   GenericElement,
   TextElement,
-  DialogElement,
   MenuElement,
   SubmenuElement,
 };
@@ -31,17 +35,24 @@ export function createElectronInstance(
     case 'window': {
       return new WindowElement(props, container);
     }
-    case 'dialog': {
-      return new DialogElement(props, container);
-    }
     case 'menu': {
       return new MenuElement(props, container);
     }
     case 'submenu': {
       return new SubmenuElement(props, container);
     }
+    case 'sep': {
+      return new SeparatorElement(props, container);
+    }
+    case 'item': {
+      return new CustomMenuItemElement(props, container);
+    }
     default: {
-      return new GenericElement(type, props, container);
+      if (isRoleMenuItemType(type)) {
+        return new RoleMenuItemElement(type, props, container);
+      } else {
+        return new GenericElement(type, props, container);
+      }
     }
   }
 };
