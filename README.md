@@ -156,3 +156,6 @@ In the Electron API, you can create MenuItems with a "role", which assigns them 
 is equivalent to 
 
 `new MenuItem({ role: 'pasteandmatchstyle' })` in vanilla Electron.
+
+## Feedback
+Feedback is welcome! Add an issue or hit me up on [Twitter](https://twitter.com/mhink1103).
