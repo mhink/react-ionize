@@ -157,5 +157,5 @@ is equivalent to
 
 `new MenuItem({ role: 'pasteandmatchstyle' })` in vanilla Electron.
 
-## Feedback
-Feedback is welcome! Add an issue or hit me up on [Twitter](https://twitter.com/mhink1103).
+## Feedback and Contributions
+Feedback is welcome! Add an issue or hit me up on [Twitter](https://twitter.com/mhink1103). I'm still working out how all this should work, but I would love to hear your suggestions.
