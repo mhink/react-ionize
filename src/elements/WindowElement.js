@@ -8,6 +8,7 @@ import TextElement from './TextElement';
 import type { ElectronApp } from 'electron';
 import type IonizeContainer from '../IonizeContainer';
 import type { HostContext } from '../IonizeHostConfig';
+import configureWrappedEventHandler from '../util/configureWrappedEventHandler';
 
 /* PROPS NEEDED
  * title
@@ -137,10 +138,14 @@ export default class WindowElement extends BaseElement {
     props                 : Object,
   ): boolean {
     if (props.onReadyToShow !== undefined) {
-      configureWrappedEventHandler.call(this, 'onReadyToShow', 'ready-to-show', props.onReadytoShow, (rawHandler) => rawHandler());
-      const handler = props.onReadyToShow;
-      this.window.on('ready-to-show', handler);
-      this.attachedHandlers['ready-to-show'] = handler;
+      configureWrappedEventHandler(
+        this.window,
+        this.attachedHandlers,
+        'onReadyToShow',
+        'ready-to-show',
+        props.onReadyToShow,
+        (rawHandler) => rawHandler()
+      );
     }
 
     if (props.showDevTools) {
@@ -180,40 +185,8 @@ export default class WindowElement extends BaseElement {
     return this.window;
   }
 
-  prepareUpdate(
-    oldProps              : Object,
-    newProps              : Object,
-    rootContainerInstance : IonizeContainer,
-  ): null | Array<mixed> {
-    const updatePayload: Array<mixed> = [];
-    
-    const mergedProps = {};
-    for (const propKey in oldProps) {
-      mergedProps[propKey] = [oldProps[propKey], null];
-    }
-    for (const propKey in newProps) {
-      if (mergedProps[propKey] !== undefined) {
-        mergedProps[propKey][1] = newProps[propKey];
-      } else {
-        mergedProps[propKey] = [null, newProps[propKey]];
-      }
-    }
-
-    for (const propKey in mergedProps) {
-      if (!SUPPORTED_PROPS[propKey]) {
-        continue;
-      }
-      const [oldVal, newVal] = mergedProps[propKey];
-      if (oldVal !== newVal) {
-        updatePayload.push(propKey, newVal);
-      }
-    }
-
-    if (updatePayload.length === 0) {
-      return null;
-    } else {
-      return updatePayload;
-    }
+  getSupportedProps(): {[string]: boolean} {
+    return SUPPORTED_PROPS;
   }
 
   commitUpdate(
@@ -230,11 +203,18 @@ export default class WindowElement extends BaseElement {
       switch (propKey) {
         case 'onReadyToShow': {
           propVal = ((propVal: any): Function);
-          configureWrappedEventHandler.call(this, 'onReadyToShow', 'ready-to-show', propVal, (rawHandler) => rawHandler());
+          configureWrappedEventHandler(
+            this.window,
+            this.attachedHandlers,
+            'onReadyToShow',
+            'ready-to-show',
+            propVal,
+            (rawHandler) => rawHandler()
+          );
           break;
         }
         case 'show': {
-          if (newProps.show) {
+          if (propVal) {
             this.window.show();
           } else {
             this.window.hide();
@@ -244,6 +224,7 @@ export default class WindowElement extends BaseElement {
         case 'size': 
         case 'defaultSize':
         case 'onResize': {
+          // TODO: figure out if we can avoid calling this multiple times
           configureSize.call(this, newProps);
           break;
         }
@@ -251,6 +232,7 @@ export default class WindowElement extends BaseElement {
         case 'defaultPosition':
         case 'onMove':
         case 'onMoved': {
+          // TODO: figure out if we can avoid calling this multiple times
           configurePosition.call(this, newProps);
           break;
         }
@@ -305,10 +287,17 @@ function configureFile({ file }: Object) {
 }
 
 function configureSize({ size, onResize, defaultSize }: Object) {
-  configureWrappedEventHandler.call(this, 'onResize', 'resize', onResize, (rawHandler) => {
-    const size = this.window.getSize();
-    rawHandler(size);
-  });
+  configureWrappedEventHandler(
+    this.window,
+    this.attachedHandlers,
+    'onResize',
+    'resize',
+    onResize,
+    (rawHandler) => {
+      const size = this.window.getSize();
+      rawHandler(size);
+    }
+  );
 
   if (!size && defaultSize) {
     this.window.setSize(...defaultSize);
@@ -338,15 +327,29 @@ function configurePosition({
   defaultPosition
 }: Object) {
 
-  configureWrappedEventHandler.call(this, 'onMove', 'move', onMove, (rawHandler) => {
-    const position = this.window.getPosition();
-    rawHandler(position);
-  });
+  configureWrappedEventHandler(
+    this.window,
+    this.attachedHandlers,
+    'onMove',
+    'move',
+    onMove,
+    (rawHandler) => {
+      const position = this.window.getPosition();
+      rawHandler(position);
+    }
+  );
 
-  configureWrappedEventHandler.call(this, 'onMoved', 'moved', onMoved, (rawHandler) => {
-    const position = this.window.getPosition();
-    rawHandler(position);
-  });
+  configureWrappedEventHandler(
+    this.window,
+    this.attachedHandlers,
+    'onMoved',
+    'moved',
+    onMoved,
+    (rawHandler) => {
+      const position = this.window.getPosition();
+      rawHandler(position);
+    }
+  );
 
   if (!position && defaultPosition) {
     this.window.setPosition(...defaultPosition);
@@ -366,38 +369,5 @@ function configurePosition({
     this.window.setPosition(...position);
     this.window.setMovable(false);
     return;
-  }
-}
-
-function configureWrappedEventHandler(propKey: string, eventKey: string, rawHandler: Function, wrapper: Function) {
-  const rawEventKey = `${eventKey}_raw`
-  const removingHandler = (
-   rawHandler === undefined &&
-   this.attachedHandlers[rawEventKey] !== undefined
-  );
-
-  const changingHandler = (
-    rawHandler !== undefined &&
-    this.attachedHandlers[rawEventKey] !== undefined && 
-    rawHandler !== this.attachedHandlers[rawEventKey]
-  );
-
-  const newHandler = (
-    rawHandler !== undefined &&
-    this.attachedHandlers[rawEventKey] === undefined
-  );
-    
-  if (removingHandler || changingHandler) {
-    const existingHandler = this.attachedHandlers[eventKey];
-    this.window.removeListener(eventKey, existingHandler);
-    delete this.attachedHandlers[eventKey];
-    delete this.attachedHandlers[rawEventKey];
-  }
-
-  if (changingHandler || newHandler) {
-    const handler = () => wrapper(rawHandler);
-    this.attachedHandlers[eventKey] = handler;
-    this.attachedHandlers[rawEventKey] = rawHandler;
-    this.window.on(eventKey, handler);
   }
 }

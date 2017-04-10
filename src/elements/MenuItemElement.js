@@ -7,6 +7,7 @@ import EventEmitter from 'events';
 
 import BaseElement from './BaseElement';
 import TextElement from './TextElement';
+import configureWrappedEventHandler from '../util/configureWrappedEventHandler';
 
 export const GENERIC_ELEMENT_ROLE_TYPES = [
   "undo", "redo", "cut", "copy", "paste", "pasteandmatchstyle", "selectall",
@@ -46,22 +47,74 @@ export class RoleMenuItemElement extends MenuItemElement {
   }
 }
 
+const SUPPORTED_PROPS = {
+  onClick: true
+};
+
 export class CustomMenuItemElement extends MenuItemElement {
   emitter: EventEmitter;
+  attachedHandlers: { [string]: Function };
 
   constructor(
     props         : Object,
     rootContainer : IonizeContainer,
   ) {
     super(props, rootContainer);
+    this.attachedHandlers = {};
     this.emitter = new EventEmitter();
     this.menuItem = new MenuItem({
       type: 'normal',
       label: props.label,
-      click: function(menuItem, browserWindow, event) {
+      click: (menuItem, browserWindow, event) => {
         this.emitter.emit('click', event);
       }
     });
+  }
+
+  finalizeBeforeMount(
+    type          : string,
+    props         : Object,
+  ): boolean {
+    if (props.onClick) {
+      configureWrappedEventHandler(
+        this.emitter,
+        this.attachedHandlers,
+        'onClick',
+        'click',
+        props.onClick,
+        (rawHandler) => rawHandler()
+      );
+    }
+    return false;
+  }
+
+  getSupportedProps(): { [string]: boolean } {
+    return SUPPORTED_PROPS;
+  }
+
+  commitUpdate(
+    updatePayload : Array<mixed>,
+    oldProps      : Object,
+    newProps      : Object
+  ): void {
+    for (let i = 0; i < updatePayload.length; i += 2) {
+      let propKey = ((updatePayload[i]: any): string);
+      let propVal = updatePayload[i+1];
+      switch (propKey) {
+        case 'onClick': {
+          propVal = ((propVal: any): Function);
+          configureWrappedEventHandler(
+            this.emitter,
+            this.attachedHandlers,
+            'onClick',
+            'click',
+            propVal,
+            (rawHandler) => rawHandler()
+          );
+          break;
+        }
+      }
+    }
   }
 }
 
