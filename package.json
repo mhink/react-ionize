@@ -4,7 +4,7 @@
   "description": "An experimental React renderer for Electron apps",
   "main": "lib/index.js",
   "scripts": {
-    "start": "EXAMPLE_ENTRY=menu.js webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
+    "start": "EXAMPLE_ENTRY=main.js webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
     "build": "babel -d lib/ src/",
     "test": "mocha-webpack --webpack-config webpack.test.config.js \"test/**/*.spec.js\"",
     "preversion": "yarn flow && yarn test && yarn build",
@@ -74,6 +74,9 @@
     "url-loader": "^0.5.8",
     "webpack": "^2.3.1",
     "webpack-dev-middleware": "^1.10.1",
-    "webpack-node-externals": "^1.5.4"
+    "webpack-node-externals": "^1.5.4",
+    "electron": "^1.6.2",
+    "react-dom": "16.0.0-alpha.5",
+    "react": "16.0.0-alpha.5"
   }
 }

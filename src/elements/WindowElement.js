@@ -89,8 +89,19 @@ import type { HostContext } from '../IonizeHostConfig';
  * onSwipe
  */
 
+const SUPPORTED_PROPS = {
+  'show': true,
+  'position': true,
+  'size': true,
+  'file': true,
+  'onReadyToShow': true,
+  'onResize': true,
+  'showDevTools': true,
+};
+
 const PROP_TO_APP_EVENT_NAME = {
   'onReadyToShow' : 'ready-to-show',
+  'onResize'      : 'resize',
   'onMove'        : 'move',
   'onMoved'       : 'moved',
 };
@@ -125,29 +136,20 @@ export default class WindowElement extends BaseElement {
     type                  : string,
     props                 : Object,
   ): boolean {
-    for (const propKey in props) {
-      if (PROP_TO_APP_EVENT_NAME.hasOwnProperty(propKey)) {
-        const handler = props[propKey];
-        const eventKey = PROP_TO_APP_EVENT_NAME[propKey];
-        this.window.on(eventKey, handler);
-        this.attachedHandlers[eventKey] = handler;
-      }
+    if (props.onReadyToShow !== undefined) {
+      configureWrappedEventHandler.call(this, 'onReadyToShow', 'ready-to-show', props.onReadytoShow, (rawHandler) => rawHandler());
+      const handler = props.onReadyToShow;
+      this.window.on('ready-to-show', handler);
+      this.attachedHandlers['ready-to-show'] = handler;
     }
-
-    const { size, onResize, defaultSize } = props;
-    configureSize(this.window, size, onResize, defaultSize);
-
-    const { position, onMove, onMoved, defaultPosition } = props;
-    configurePosition(this.window, position, onMove, onMoved, defaultPosition);
 
     if (props.showDevTools) {
       this.window.webContents.openDevTools();
     }
 
-    const { file } = props;
-    if (file) {
-      configureFile(this.window, file);
-    }
+    configureSize.call(this, props);
+    configurePosition.call(this, props);
+    configureFile.call(this, props);
 
     if (this.parentWindow) {
       this.window.setParentWindow(this.parentWindow);
@@ -183,47 +185,28 @@ export default class WindowElement extends BaseElement {
     newProps              : Object,
     rootContainerInstance : IonizeContainer,
   ): null | Array<mixed> {
-    let updatePayload: Array<mixed> = [];
-
-    // Check for entering/changed/exiting handlers
-    for (const propKey in PROP_TO_APP_EVENT_NAME) {
-      const newHandler = newProps[propKey];
-      const oldHandler = oldProps[propKey];
-
-      // Exiting
-      if (oldHandler && !newHandler) {
-        updatePayload.push(propKey, null);
-        continue;
-      }
-      // Entering
-      if (!oldHandler && newHandler) {
-        updatePayload.push(propKey, newHandler);
-        continue;
-      }
-      // Changed
-      if (oldHandler !== newHandler) {
-        updatePayload.push(propKey, newHandler);
-        continue;
+    const updatePayload: Array<mixed> = [];
+    
+    const mergedProps = {};
+    for (const propKey in oldProps) {
+      mergedProps[propKey] = [oldProps[propKey], null];
+    }
+    for (const propKey in newProps) {
+      if (mergedProps[propKey] !== undefined) {
+        mergedProps[propKey][1] = newProps[propKey];
+      } else {
+        mergedProps[propKey] = [null, newProps[propKey]];
       }
     }
 
-    // If .show changed, we need to flush in the new value.
-    if (oldProps.show !== newProps.show) {
-      updatePayload.push('show', !!newProps.show);
-    }
-
-    // Likewise with position.
-    if (oldProps.position !== newProps.position) {
-      updatePayload.push('position', true);
-    }
-
-    // Likewise with size.
-    if (oldProps.size !== newProps.size) {
-      updatePayload.push('size', true);
-    }
-
-    if (oldProps.file !== newProps.file) {
-      updatePayload.push('file', true);
+    for (const propKey in mergedProps) {
+      if (!SUPPORTED_PROPS[propKey]) {
+        continue;
+      }
+      const [oldVal, newVal] = mergedProps[propKey];
+      if (oldVal !== newVal) {
+        updatePayload.push(propKey, newVal);
+      }
     }
 
     if (updatePayload.length === 0) {
@@ -238,24 +221,18 @@ export default class WindowElement extends BaseElement {
     oldProps      : Object,
     newProps      : Object,
   ): void {
-
     for (let i = 0; i < updatePayload.length; i += 2) {
       let propKey = ((updatePayload[i]: any): string);
       let propVal = updatePayload[i+1];
 
-      // Deal with changed event handlers
-      if (propKey in PROP_TO_APP_EVENT_NAME) {
-        propVal = ((propVal: any): Function);
-        const eventKey = PROP_TO_APP_EVENT_NAME[propKey];
-        this.window.removeAllListeners(eventKey);
-
-        if (propVal !== null) {
-          const eventKey = PROP_TO_APP_EVENT_NAME[propKey];
-          this.window.on(eventKey, propVal);
-        }
-      }
-
+      // If we hit this point, we KNOW the prop changed, so we don't need to do
+      // any checking. Just update to the new value.
       switch (propKey) {
+        case 'onReadyToShow': {
+          propVal = ((propVal: any): Function);
+          configureWrappedEventHandler.call(this, 'onReadyToShow', 'ready-to-show', propVal, (rawHandler) => rawHandler());
+          break;
+        }
         case 'show': {
           if (newProps.show) {
             this.window.show();
@@ -264,19 +241,22 @@ export default class WindowElement extends BaseElement {
           }
           break;
         }
-        case 'position': {
-          const { position, onMove, onMoved, defaultPosition } = newProps;
-          configurePosition(this.window, position, onMove, onMoved, defaultPosition);
+        case 'size': 
+        case 'defaultSize':
+        case 'onResize': {
+          configureSize.call(this, newProps);
           break;
         }
-        case 'size': {
-          const { size, onResize, defaultSize } = newProps;
-          configureSize(this.window, size, onResize, defaultSize);
+        case 'position':
+        case 'defaultPosition':
+        case 'onMove':
+        case 'onMoved': {
+          configurePosition.call(this, newProps);
           break;
         }
         case 'file': {
-          const { file } = newProps;
-          configureFile(this.window, file);
+          configureFile.call(this, newProps);
+          break;
         }
       }
     }
@@ -314,64 +294,110 @@ export default class WindowElement extends BaseElement {
       child.parentWindow = null;
     }
   }
+
 }
 
-function configureSize(
-  window: BrowserWindow,
-  size,
-  onResize,
-  defaultSize
-) {
+function configureFile({ file }: Object) {
+  if (file) {
+    const filePath = path.resolve(file);
+    this.window.loadURL(`file://${filePath}`);
+  }
+}
+
+function configureSize({ size, onResize, defaultSize }: Object) {
+  configureWrappedEventHandler.call(this, 'onResize', 'resize', onResize, (rawHandler) => {
+    const size = this.window.getSize();
+    rawHandler(size);
+  });
+
   if (!size && defaultSize) {
-    window.setSize(...defaultSize);
-    window.setResizable(true);
+    this.window.setSize(...defaultSize);
+    this.window.setResizable(true);
     return;
   }
   if (!size && !defaultSize) {
-    window.setResizable(true);
+    this.window.setResizable(true);
     return;
   }
   if (size && onResize) {
-    window.setSize(...size);
-    window.setResizable(true);
+    this.window.setSize(...size);
+    this.window.setResizable(true);
     return;
   }
   if (size && !onResize) {
-    window.setSize(...size);
-    window.setResizable(false);
+    this.window.setSize(...size);
+    this.window.setResizable(false);
     return;
   }
 }
 
-function configurePosition(
-  window: BrowserWindow,
+function configurePosition({
   position,
   onMove,
   onMoved,
   defaultPosition
-) {
+}: Object) {
+
+  configureWrappedEventHandler.call(this, 'onMove', 'move', onMove, (rawHandler) => {
+    const position = this.window.getPosition();
+    rawHandler(position);
+  });
+
+  configureWrappedEventHandler.call(this, 'onMoved', 'moved', onMoved, (rawHandler) => {
+    const position = this.window.getPosition();
+    rawHandler(position);
+  });
+
   if (!position && defaultPosition) {
-    window.setPosition(...defaultPosition);
-    window.setMovable(true);
+    this.window.setPosition(...defaultPosition);
+    this.window.setMovable(true);
     return;
   }
   if (!position && !defaultPosition) {
-    window.setMovable(true);
+    this.window.setMovable(true);
     return;
   }
   if (position && (onMove || onMoved)) {
-    window.setPosition(...position);
-    window.setMovable(true);
+    this.window.setPosition(...position);
+    this.window.setMovable(true);
     return;
   }
   if (position && !(onMove || onMoved)) {
-    window.setPosition(...position);
-    window.setMovable(false);
+    this.window.setPosition(...position);
+    this.window.setMovable(false);
     return;
   }
 }
 
-function configureFile(window, file) {
-  const filePath = path.resolve(file);
-  window.loadURL(`file://${filePath}`);
+function configureWrappedEventHandler(propKey: string, eventKey: string, rawHandler: Function, wrapper: Function) {
+  const rawEventKey = `${eventKey}_raw`
+  const removingHandler = (
+   rawHandler === undefined &&
+   this.attachedHandlers[rawEventKey] !== undefined
+  );
+
+  const changingHandler = (
+    rawHandler !== undefined &&
+    this.attachedHandlers[rawEventKey] !== undefined && 
+    rawHandler !== this.attachedHandlers[rawEventKey]
+  );
+
+  const newHandler = (
+    rawHandler !== undefined &&
+    this.attachedHandlers[rawEventKey] === undefined
+  );
+    
+  if (removingHandler || changingHandler) {
+    const existingHandler = this.attachedHandlers[eventKey];
+    this.window.removeListener(eventKey, existingHandler);
+    delete this.attachedHandlers[eventKey];
+    delete this.attachedHandlers[rawEventKey];
+  }
+
+  if (changingHandler || newHandler) {
+    const handler = () => wrapper(rawHandler);
+    this.attachedHandlers[eventKey] = handler;
+    this.attachedHandlers[rawEventKey] = rawHandler;
+    this.window.on(eventKey, handler);
+  }
 }

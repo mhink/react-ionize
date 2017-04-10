@@ -27,8 +27,10 @@ declare module 'electron' {
 
     webContents: any; // TODO
     setPosition: (number, number, ?boolean) => void;
+    getPosition: () => [number, number];
     setMovable: (boolean) => void;
     setSize: (number, number, ?boolean) => void;
+    getSize: () => [number, number];
     setResizable: (boolean) => void;
   }
 
