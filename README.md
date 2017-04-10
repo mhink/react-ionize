@@ -3,6 +3,8 @@
 
 react-ionize is a library which lets you use the same React component-based architechure to manage the lifecycle of your application in the Electron main process. It is essentially a replacement for ReactDOM- but instead of flushing component updates to a DOM, it flushes them out to Electron's API. Think React Native for Electron apps.
 
+![out2](https://cloud.githubusercontent.com/assets/780461/24886294/68b2911c-1e08-11e7-83db-49a5732cc69b.gif)
+
 ## Caveat Developer
 react-ionize is still an EXPERIMENTAL, PRE-ALPHA library, and is not yet
 suitable for for use in a production app! It's a custom renderer built on top
