@@ -13,20 +13,20 @@ to add.)
 ## Getting Started
 
 ```
-* yarn add react-ionize 
-* yarn add react-dom@16.0.0-alpha.5
+* yarn add electron
+* yarn add react@16.0.0-alpha.5
+* yarn add react-ionize
 ```
 
 Take a look at [Ionize Example App](https://github.com/mhink/ionize-example-app) to get started.
 
-
 ## Hello, world!
 
 ```
-import React from 'react';
-import Ionize from 'react-ionize';
-import path from 'path';
-import fs from 'fs';
+const React = require('react');
+const Ionize = require('react-ionize');
+const path = require('path');
+const fs = require('fs');
 
 const INDEX_HTML_PATH = path.resolve(__dirname, 'index.html');
 const INDEX_HTML_SOURCE = `
@@ -50,6 +50,8 @@ Ionize.start(
   </app>
 );
 ```
+
+(Normally, you'd build and distribute an `index.html` along with your JS during your build process, but I wanted this example to be as independent of build processes as possible.)
 
 ## API
 ### `Ionize.start(element, [callback])`
@@ -75,7 +77,7 @@ application: browser windows, dialogs, tray elements, and so forth. (Or at
 least, they will be once I get a chance to implement them.)
 
 * Event Handlers
-  * onReady- Fired immediately when the component is mounted.
+  * onReady- Fired immediately when the component is mounted. Under the hood, Ionize actually waits for 'ready' before even trying to start mounting everything, but this is here for the sake of API compatibility.
 
 ### `<window>`
 Represents an Electron BrowserWindow object.
@@ -90,40 +92,65 @@ Represents an Electron BrowserWindow object.
     browser window. When it transitions from true -> false, Ionize hides
     (but does not close) the browser window. If this is true when the
     element is mounted, Ionize will immediately show the window.
+    
+* onReadyToShow
+  * Called when the window's `ready-to-show` event is triggered. You can use this to keep the window hidden until it's ready.
 
 * showDevTools
   * If this is true when the element is mounted, Ionize will open
     the Chrome Developer Tools when opening the browser window.
 
-* Event Handlers
-  * onReadyToShow
-  * onClose
-  * onClosed
-  * onBlur
-  * onFocus
-  * onShow
+* size
+  * This is a controlled prop, and behaves much like an `<input>` element in traditional React apps. That is to say, if you provide `size` by itself, the user will not be able to resize the window- it will simply *be* that size, unless you provide an `onResize` handler to update the value provided.
+  * See also: https://facebook.github.io/react/docs/forms.html#controlled-components
+
+* onResize
+  * This event handler is called with the new window size when the window size changes. If provided in conjunction with the `size` prop, it will allow the window to be resized (although you will need to update the value of the `size` prop accordingly). 
+  
+* defaultSize
+  * If you don't care about tracking the window's size manually, you may provide a `defaultSize` prop to set the window to an initial size when it's mounted.
+
+* position
+* onMove
+* onMoved
+* defaultPosition
+  * These props work pretty much the same as `size`, `onResize`, and `defaultSize`, except they represent the position on the screen.
+  * Keep in mind that these values might be funky if you're dealing with multiple monitors.
 
 ### `<menu>`
-The `<menu>` element defines an Electron application menu.
+The `<menu>` element defines an Electron application menu. By nesting `<submenu>`s inside it, you can construct your menu.
 
 TODO: When nested inside a `<window>` element, this should attach the menu to
-that window, specifically- and I'd like to have something like a <contextmenu>
+that window, specifically- and I'd like to have something like a `<contextmenu>`
 element for right-clicks.
 
 ### `<submenu>`
-TBD
+* label
+  * The label of the submenu. (Keep in mind that on OSX, the first submenu in the list will take the application's name, no matter what label you might give it.)
+* children
+  * `<submenu>` and `<item>` elements only!
 
 ### `<item>` and related
-TBD
+Pretty much equivalent to `new MenuItem({ type: 'normal' })` in vanilla Electron.
 
-### `<dialog>`
-This is an odd duck. Since Electron's `dialog` API is more of a functional
-interface, I'm experimenting with an idea you could call a 'smart ref'- in
-other words, obtaining a ref to this element gives you an object which you can
-safely call `show()` on, which makes the appropriate function call based on
-the props you give `<dialog>`.
+* label
+  * The text shown for this menu item
+  
+* onClick
+  * An onclick handler for this menu item.
+  
+There are a couple special-case elements related to `<item>`.
 
-When mounted within a `<window>` element, calling `show()` on this will pop
-up a modal dialog _in that window_. Otherwise, it will pop up a modal dialog 
-not linked to that window.
+#### `<sep>`
+A *separator* menu item. Equivalent to `new MenuItem({ type: 'separator' })` in vanilla Electron.
 
+#### Role-based elements
+In the Electron API, you can create MenuItems with a "role", which assigns them some OS-native functionality (think copy, paste, select all, and so on.) As a shorthand, you can use these directly as an element name within a `<submenu>`. For instance,
+
+```
+<pasteandmatchstyle />
+```
+
+is equivalent to 
+
+`new MenuItem({ role: 'pasteandmatchstyle' })` in vanilla Electron.
