@@ -13,9 +13,9 @@ to add.)
 ## Getting Started
 
 ```
-* yarn add electron
-* yarn add react@16.0.0-alpha.5
-* yarn add react-ionize
+* npm install --save electron
+* npm install --save react@16.0.0-alpha.5
+* npm install --save react-ionize
 ```
 
 Take a look at [Ionize Example App](https://github.com/mhink/ionize-example-app) to get started.
