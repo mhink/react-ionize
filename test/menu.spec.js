@@ -35,6 +35,35 @@ describe('<menu />', function() {
     );
   });
 
+  it('should be possible to modify item labels', function(done) {
+    let menuItem;
+    Ionize.chain(
+      <menu>
+        <submenu>
+          <item label="Foo" ref={c => { menuItem = c;}} />
+        </submenu>
+      </menu>,
+      () => {
+        expect(menuItem.flush())
+        .to.deep.equal({
+          label: 'Foo'
+        })
+      },
+      <menu>
+        <submenu>
+          <item label="Bar" ref={c => { menuItem = c;}} />
+        </submenu>
+      </menu>,
+      () => {
+        expect(menuItem.flush())
+        .to.deep.equal({
+          label: 'Bar'
+        })
+        done();
+      }
+    );
+  });
+
   it('should be possible to add items to a submenu', function(done) {
     let subMenu;
 

@@ -21,7 +21,10 @@ export const OSX_GENERIC_ELEMENT_ROLE_TYPES  = [
 ];
 
 export class MenuItemElement extends BaseElement {
-  menuItem: (null | MenuItem);
+  menuItem: MenuItem;
+  getPublicInstance(): MenuItem {
+    return this.menuItem;
+  };
 }
 
 export class SeparatorElement extends MenuItemElement {
@@ -48,6 +51,7 @@ export class RoleMenuItemElement extends MenuItemElement {
 }
 
 const SUPPORTED_PROPS = {
+  label: true,
   onClick: true
 };
 
@@ -115,6 +119,14 @@ export class CustomMenuItemElement extends MenuItemElement {
         }
       }
     }
+
+    this.menuItem = new MenuItem({
+      type: 'normal',
+      label: newProps.label,
+      click: (menuItem, browserWindow, event) => {
+        this.emitter.emit('click', event);
+      }
+    });
   }
 }
 

@@ -4,7 +4,8 @@
   "description": "An experimental React renderer for Electron apps",
   "main": "lib/index.js",
   "scripts": {
-    "start": "EXAMPLE_ENTRY=main.js webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
+    "start": "EXAMPLE_ENTRY=main.js npm run start:example",
+    "start:example": "webpack --bail --config webpack.examples.config.js && electron ./dist/main.js",
     "build": "babel -d lib/ src/",
     "test": "mocha-webpack --webpack-config webpack.test.config.js \"test/**/*.spec.js\"",
     "preversion": "yarn flow && yarn test && yarn build",
