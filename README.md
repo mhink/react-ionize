@@ -159,3 +159,7 @@ is equivalent to
 
 ## Feedback and Contributions
 Feedback is welcome! Add an issue or hit me up on [Twitter](https://twitter.com/mhink1103). I'm still working out how all this should work, but I would love to hear your suggestions.
+
+If you'd like to contribute, right now we could really use some more feature implementations. Basically, what I've been doing is picking Electron APIs and figuring out how to turn them into either elements or props on existing elements. For instance, the [`app.setBadge(text)`](https://electron.atom.io/docs/api/app/#appdocksetbadgetext-macos) API call would make for a pretty good prop on `<app />`.
+
+To assist the would-be contributor, I've included a bunch of documentation and notes about React Fiber in the comments of `/src/IonizeHostConfig.js`. For further reading, I'd basically recommend cloning down the React repo and digging through its `/src/renderers` directory, starting with `/src/renderers/shared/fiber/ReactFiberReconciler.js` and going from there.
