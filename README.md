@@ -1,7 +1,8 @@
 # react-ionize
-[Electron](https://electron.atom.io) applications consist of two types of process: a *main process* which manages the lifecycle of the application, and several *renderer processes*, which display webpages which comprise the application's GUI. It's fairly common to use React and ReactDOM to build a GUI in the renderer process.
 
-react-ionize is a library which lets you use the same React component-based architechure to manage the lifecycle of your application in the Electron main process. It is essentially a replacement for ReactDOM- but instead of flushing component updates to a DOM, it flushes them out to Electron's API. Think React Native for Electron apps.
+react-ionize is a library which lets you build the "non-browser" parts of an Electron app using React components to manage your application's state.
+
+[Electron](https://electron.atom.io) applications consist of two types of process: a *main process* which manages the lifecycle of the application, and several *renderer processes*, which display webpages which comprise the application's GUI. While it's fairly common to use React and ReactDOM to build an HTML/CSS/JS interface in the renderer process, `react-ionize` runs in the main process, managing things like window size/position, menu contents, and application-wide events.
 
 ![react-ionize demo](https://cloud.githubusercontent.com/assets/780461/24886483/b5f61e70-1e09-11e7-8e44-9179a5dc8ab7.gif)
 
