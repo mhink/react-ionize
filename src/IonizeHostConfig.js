@@ -76,8 +76,7 @@ export function appendInitialChild(
 // its child elements.)
 //
 // The return value of this function determines whether React Fiber will run
-// `commitMount` for the newly created element. (I can't *quite* tell why this
-// final, optional pass is necessary. Any hints are welcome.)
+// `commitMount` for the newly created element.
 export function finalizeInitialChildren(
   newElement            : BaseElement,
   type                  : string,
@@ -198,6 +197,9 @@ export function prepareForCommit(): void {
 }
 
 // ReactDOM uses this to focus any input elements it just created.
+// It's important to note that a batch of `commitMount`s and `commitUpdates`
+// will always happen atomically, without being interrupted by other work-
+// whereas most other lifecycle methods may get interrupted or pre-empted.
 export function commitMount(
   instance              : BaseElement,
   type                  : string,
