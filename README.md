@@ -25,7 +25,7 @@ Take a look at [Ionize Example App](https://github.com/mhink/ionize-example-app)
 
 ## Hello, world!
 
-```
+```js
 const React = require('react');
 const Ionize = require('react-ionize');
 const path = require('path');
