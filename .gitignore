@@ -3,3 +3,4 @@ dist/
 lib/
 .tmp/
 *.log
+/.idea

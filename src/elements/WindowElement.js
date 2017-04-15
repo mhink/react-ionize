@@ -98,6 +98,7 @@ const SUPPORTED_PROPS = {
   'onReadyToShow': true,
   'onResize': true,
   'showDevTools': true,
+  'defaultAcceptFirstMouse': true,
 };
 
 const PROP_TO_APP_EVENT_NAME = {
@@ -118,7 +119,10 @@ export default class WindowElement extends BaseElement {
   ) {
     super(props, rootContainer);
 
-    this.window = new BrowserWindow({ show: false });
+    this.window = new BrowserWindow({
+      show: false,
+      acceptFirstMouse: !!props.defaultAcceptFirstMouse
+    });
     this.parentWindow = null;
     this.attachedHandlers = {};
   }
