@@ -98,7 +98,7 @@ const SUPPORTED_PROPS = {
   'onReadyToShow': true,
   'onResize': true,
   'showDevTools': true,
-  'defaultAcceptFirstMouse': true,
+  'acceptFirstMouse': true,
 };
 
 const PROP_TO_APP_EVENT_NAME = {
@@ -121,7 +121,7 @@ export default class WindowElement extends BaseElement {
 
     this.window = new BrowserWindow({
       show: false,
-      acceptFirstMouse: !!props.defaultAcceptFirstMouse
+      acceptFirstMouse: !!props.acceptFirstMouse
     });
     this.parentWindow = null;
     this.attachedHandlers = {};
@@ -244,6 +244,9 @@ export default class WindowElement extends BaseElement {
           configureFile.call(this, newProps);
           break;
         }
+        case 'acceptFirstMouse':
+          console.warn('Warning: you cannot change acceptFirstMouse after the first render');
+          break;
       }
     }
   }
