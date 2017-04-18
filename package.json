@@ -9,7 +9,11 @@
     "build": "babel -d lib/ src/",
     "test": "mocha-webpack --webpack-config webpack.test.config.js \"test/**/*.spec.js\"",
     "preversion": "yarn flow && yarn test && yarn build",
-    "postversion": "npm publish && git push origin --tags"
+    "postversion": "npm publish && git push origin --tags",
+    "demo:1": "EXAMPLE_ENTRY=demoday1.js npm run start:example",
+    "demo:2": "EXAMPLE_ENTRY=demoday2.js npm run start:example",
+    "demo:3": "EXAMPLE_ENTRY=demoday3.js npm run start:example",
+    "demo:4": "EXAMPLE_ENTRY=demoday4.js npm run start:example"
   },
   "author": "Matt Hink <mhink1103@gmail.com>",
   "license": "MIT",

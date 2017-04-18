@@ -300,7 +300,7 @@ function configureSize({ size, onResize, defaultSize }: Object) {
   );
 
   if (!size && defaultSize) {
-    this.window.setSize(...defaultSize);
+    this.window.setSize(...defaultSize, true);
     this.window.setResizable(true);
     return;
   }
@@ -309,16 +309,50 @@ function configureSize({ size, onResize, defaultSize }: Object) {
     return;
   }
   if (size && onResize) {
-    this.window.setSize(...size);
+    this.window.setSize(...size, true);
     this.window.setResizable(true);
     return;
   }
   if (size && !onResize) {
-    this.window.setSize(...size);
+    this.window.setSize(...size, true);
     this.window.setResizable(false);
     return;
   }
 }
+
+// function configureMinimize({ minimized, onMinimize, onRestore, defaultMinimized }: Object) {
+//   configureWrappedEventHandler(
+//     this.window,
+//     this.attachedHandlers,
+//     'onMinimize',
+//     'minimize',
+//     onMinimize,
+//     (rawHandler) => rawHandler()
+//   );
+//   configureWrappedEventHandler(
+//     this.window,
+//     this.attachedHandlers,
+//     'onRestore',
+//     'restore',
+//     onRestore,
+//     (rawHandler) => rawHandler()
+//   );
+// 
+//   if (minimized === undefined && defaultMinimized !== undefined) {
+//     if (defaultMinimized) {
+//       this.window.minimize();
+//     } else {
+//       this.window.restore();
+//     }
+//     this.window.setMinimizable(true);
+//     return;
+//   }
+//   if (minimized === undefined && defaultMinimized === undefined) {
+//     this.window.setMinimizable(true);
+//     return;
+//   }
+//   if (position && (onMinimize 
+// }
 
 function configurePosition({
   position,
@@ -352,7 +386,7 @@ function configurePosition({
   );
 
   if (!position && defaultPosition) {
-    this.window.setPosition(...defaultPosition);
+    this.window.setPosition(...defaultPosition, true);
     this.window.setMovable(true);
     return;
   }
@@ -361,12 +395,12 @@ function configurePosition({
     return;
   }
   if (position && (onMove || onMoved)) {
-    this.window.setPosition(...position);
+    this.window.setPosition(...position, true);
     this.window.setMovable(true);
     return;
   }
   if (position && !(onMove || onMoved)) {
-    this.window.setPosition(...position);
+    this.window.setPosition(...position, true);
     this.window.setMovable(false);
     return;
   }
