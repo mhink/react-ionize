@@ -9,6 +9,7 @@ import type { ElectronApp } from 'electron';
 import type IonizeContainer from '../IonizeContainer';
 import type { HostContext } from '../IonizeHostConfig';
 import configureWrappedEventHandler from '../util/configureWrappedEventHandler';
+import { getCurrentFiberStackAddendum } from 'react-dom/lib/ReactDebugCurrentFiber';
 
 /* PROPS NEEDED
  * title
@@ -245,7 +246,14 @@ export default class WindowElement extends BaseElement {
           break;
         }
         case 'acceptFirstMouse':
-          console.warn('Warning: you cannot change acceptFirstMouse after the first render');
+          if (process.env.NODE_ENV !== 'production') {
+            console.warn(
+              'A component is changing the acceptFirstMouse prop of a window. ' +
+              'The acceptFirstMouse prop only has effect when the window is first rendered, ' +
+              'changing it after the first render does nothing. ' +
+              getCurrentFiberStackAddendum()
+            );
+          }
           break;
       }
     }
