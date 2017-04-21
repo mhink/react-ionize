@@ -1,6 +1,14 @@
 declare module 'electron' {
   declare var dialog: any;
 
+  declare type ElectronDock = {
+    setBadge: (string) => void,
+    hide: () => void,
+    show: () => void,
+    cancelBounce: (id: number) => void,
+    bounce: (type?: string) => number,
+  }
+
   declare type ElectronApp = {|
     isReady: () => boolean,
     on: (string, Function) => ElectronApp,
@@ -8,6 +16,8 @@ declare module 'electron' {
     removeListener: (string, Function) => ElectronApp,
 
     test_makeReady: () => void,
+
+    dock: ElectronDock,
   |};
 
   declare var app: ElectronApp;

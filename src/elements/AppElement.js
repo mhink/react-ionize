@@ -4,11 +4,16 @@ import BaseElement from './BaseElement';
 
 import type { ElectronApp } from 'electron';
 import TextElement from './TextElement';
+import DockElement from './DockElement';
 import type IonizeContainer from '../IonizeContainer';
 import type { HostContext } from '../IonizeHostConfig';
 
 const PROP_TO_APP_EVENT_NAME = {
   'onReady'               : 'ready',
+};
+
+const SUPPORTED_PROPS = {
+  badge: true,
 };
 
 export default class AppElement extends BaseElement {
@@ -23,6 +28,11 @@ export default class AppElement extends BaseElement {
 
     this.rootContainer = rootContainer;
     this.attachedHandlers = {};
+
+    const hasDock = props.children.some(child => child && child.type === 'dock');
+    if (!hasDock) {
+      this.rootContainer.app.dock.hide();
+    }
   }
 
   getPublicInstance(
@@ -30,6 +40,10 @@ export default class AppElement extends BaseElement {
     // TODO: We should probably return a proxy object so the user can't go
     // crazy with the possibilities here.
     return this.rootContainer.app;
+  }
+
+  getSupportedProps(): { [string]: boolean } {
+    return SUPPORTED_PROPS;
   }
 
   // Hook up event handlers, if they exist
@@ -73,6 +87,32 @@ export default class AppElement extends BaseElement {
     for (const eventKey in this.attachedHandlers) {
       const handler = this.attachedHandlers[eventKey];
       this.rootContainer.app.removeListener(eventKey, handler);
+    }
+  }
+
+  appendChild(
+    child                 : (BaseElement | TextElement)
+  ): void {
+    console.log('append');
+    if (child instanceof DockElement) {
+      this.rootContainer.app.dock.show();
+    }
+  }
+
+  insertBefore(
+    child                 : (BaseElement | TextElement),
+    beforeChild           : (BaseElement | TextElement),
+  ): void {
+    if (child instanceof DockElement) {
+      this.rootContainer.app.dock.show();
+    }
+  }
+
+  removeChild(
+    child         : (BaseElement | TextElement)
+  ): void {
+    if (child instanceof DockElement) {
+      this.rootContainer.app.dock.hide();
     }
   }
 }
