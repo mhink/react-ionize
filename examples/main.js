@@ -11,12 +11,27 @@ class ExampleApp extends React.Component {
       show: false,
       size: [300, 300],
       position: [100, 100],
-      badge: "123"
+      bounce: false,
     };
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        bounce: true,
+      });
+    }, 3000);
+
+    setTimeout(() => {
+      this.setState({
+        bounce: false,
+      });
+    }, 6000);
+  }
+
   render() {
-    return <app badge={this.state.badge}>
+    return <app>
+      <dock badge="Hey" bouncing={this.state.bounce ? 'critical' : false} />
       <menu>
         <submenu label="Electron">
           <about />

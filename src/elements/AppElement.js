@@ -4,6 +4,7 @@ import BaseElement from './BaseElement';
 
 import type { ElectronApp } from 'electron';
 import TextElement from './TextElement';
+import DockElement from './DockElement';
 import type IonizeContainer from '../IonizeContainer';
 import type { HostContext } from '../IonizeHostConfig';
 
@@ -28,7 +29,10 @@ export default class AppElement extends BaseElement {
     this.rootContainer = rootContainer;
     this.attachedHandlers = {};
 
-    if (props.badge) this.rootContainer.app.dock.setBadge(props.badge);
+    const hasDock = props.children.some(child => child && child.type === 'dock');
+    if (!hasDock) {
+      this.rootContainer.app.dock.hide();
+    }
   }
 
   getPublicInstance(
@@ -86,21 +90,29 @@ export default class AppElement extends BaseElement {
     }
   }
 
-  commitUpdate(
-    updatePayload : Array<mixed>,
-    oldProps      : Object,
-    newProps      : Object
+  appendChild(
+    child                 : (BaseElement | TextElement)
   ): void {
-    for (let i = 0; i < updatePayload.length; i += 2) {
-      let propKey = ((updatePayload[i]: any): string);
-      let propVal = updatePayload[i+1];
-      switch (propKey) {
-        case 'badge': {
-          propVal = ((propVal: any): string);
-          this.rootContainer.app.dock.setBadge(propVal);
-          break;
-        }
-      }
+    console.log('append');
+    if (child instanceof DockElement) {
+      this.rootContainer.app.dock.show();
+    }
+  }
+
+  insertBefore(
+    child                 : (BaseElement | TextElement),
+    beforeChild           : (BaseElement | TextElement),
+  ): void {
+    if (child instanceof DockElement) {
+      this.rootContainer.app.dock.show();
+    }
+  }
+
+  removeChild(
+    child         : (BaseElement | TextElement)
+  ): void {
+    if (child instanceof DockElement) {
+      this.rootContainer.app.dock.hide();
     }
   }
 }

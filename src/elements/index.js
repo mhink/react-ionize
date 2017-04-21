@@ -1,5 +1,6 @@
 import BaseElement from './BaseElement';
 import AppElement from './AppElement';
+import DockElement from './DockElement';
 import WindowElement from './WindowElement';
 import GenericElement from './GenericElement';
 import TextElement from './TextElement';
@@ -15,6 +16,7 @@ import {
 export {
   BaseElement,
   AppElement,
+  DockElement,
   WindowElement,
   GenericElement,
   TextElement,
@@ -31,6 +33,9 @@ export function createElectronInstance(
   switch (type) {
     case 'app': {
       return new AppElement(props, container);
+    }
+    case 'dock': {
+      return new DockElement(props, container);
     }
     case 'window': {
       return new WindowElement(props, container);

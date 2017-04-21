@@ -2,7 +2,11 @@ declare module 'electron' {
   declare var dialog: any;
 
   declare type ElectronDock = {
-    setBadge: (string) => void
+    setBadge: (string) => void,
+    hide: () => void,
+    show: () => void,
+    cancelBounce: (id: number) => void,
+    bounce: (type?: string) => number,
   }
 
   declare type ElectronApp = {|
