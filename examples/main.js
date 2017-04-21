@@ -11,11 +11,12 @@ class ExampleApp extends React.Component {
       show: false,
       size: [300, 300],
       position: [100, 100],
+      badge: "123"
     };
   }
 
   render() {
-    return <app>
+    return <app badge={this.state.badge}>
       <menu>
         <submenu label="Electron">
           <about />

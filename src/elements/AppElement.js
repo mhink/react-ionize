@@ -11,6 +11,10 @@ const PROP_TO_APP_EVENT_NAME = {
   'onReady'               : 'ready',
 };
 
+const SUPPORTED_PROPS = {
+  badge: true,
+};
+
 export default class AppElement extends BaseElement {
   rootContainer : IonizeContainer;
   attachedHandlers: {[string]: Function};
@@ -23,6 +27,8 @@ export default class AppElement extends BaseElement {
 
     this.rootContainer = rootContainer;
     this.attachedHandlers = {};
+
+    if (props.badge) this.rootContainer.app.dock.setBadge(props.badge);
   }
 
   getPublicInstance(
@@ -30,6 +36,10 @@ export default class AppElement extends BaseElement {
     // TODO: We should probably return a proxy object so the user can't go
     // crazy with the possibilities here.
     return this.rootContainer.app;
+  }
+
+  getSupportedProps(): { [string]: boolean } {
+    return SUPPORTED_PROPS;
   }
 
   // Hook up event handlers, if they exist
@@ -73,6 +83,24 @@ export default class AppElement extends BaseElement {
     for (const eventKey in this.attachedHandlers) {
       const handler = this.attachedHandlers[eventKey];
       this.rootContainer.app.removeListener(eventKey, handler);
+    }
+  }
+
+  commitUpdate(
+    updatePayload : Array<mixed>,
+    oldProps      : Object,
+    newProps      : Object
+  ): void {
+    for (let i = 0; i < updatePayload.length; i += 2) {
+      let propKey = ((updatePayload[i]: any): string);
+      let propVal = updatePayload[i+1];
+      switch (propKey) {
+        case 'badge': {
+          propVal = ((propVal: any): string);
+          this.rootContainer.app.dock.setBadge(propVal);
+          break;
+        }
+      }
     }
   }
 }
