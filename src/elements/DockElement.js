@@ -52,8 +52,10 @@ export default class DockElement extends BaseElement {
             this.dock.cancelBounce(this.currentBounce);
             delete this.currentBounce;
           }
-          if (propVal) {
-            this.currentBounce = this.dock.bounce(propVal)
+          if (propVal === true) {
+            this.currentBounce = this.dock.bounce();
+          } else if (propVal) {
+            this.currentBounce = this.dock.bounce(propVal);
           }
         }
       }
