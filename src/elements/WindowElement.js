@@ -110,30 +110,50 @@ const PROP_TO_APP_EVENT_NAME = {
 };
 
 export default class WindowElement extends BaseElement {
-  parentWindow: (null | BrowserWindow);
   window: BrowserWindow;
   attachedHandlers: {[string]: Function};
+  initializeFromParent: () => mixed;
+  childWindows: Set<WindowElement>;
 
   constructor(
     props         : Object,
     rootContainer : IonizeContainer,
+    context       : HostContext
   ) {
     super(props, rootContainer);
 
+    this.attachedHandlers = {};
+    this.childWindows = new Set();
+
+    if (context.type === 'window') {
+      this.initializeFromParent = this.initialize.bind(this, props);
+    } else {
+      this.initialize(props);
+    }
+  }
+
+  initialize(
+    props         : Object,
+    parentWindow  : BrowserWindow
+  ) {
     this.window = new BrowserWindow({
       show: false,
-      acceptFirstMouse: !!props.acceptFirstMouse
+      acceptFirstMouse: !!props.acceptFirstMouse,
+      parent: parentWindow
     });
-    this.parentWindow = null;
-    this.attachedHandlers = {};
+
+    this.childWindows.forEach(child => child.initializeFromParent(this.window));
   }
 
   appendChildBeforeMount(
     child         : (BaseElement | TextElement)
   ): void {
-    if (child instanceof DialogElement
-    ||  child instanceof WindowElement) {
-      child.parentWindow = this.window;
+    if (child instanceof WindowElement) {
+      this.childWindows.add(child);
+
+      if (this.window) {
+        child.initializeFromParent(this.window);
+      }
     }
   }
 
@@ -142,35 +162,31 @@ export default class WindowElement extends BaseElement {
     type                  : string,
     props                 : Object,
   ): boolean {
-    if (props.onReadyToShow !== undefined) {
-      configureWrappedEventHandler(
-        this.window,
-        this.attachedHandlers,
-        'onReadyToShow',
-        'ready-to-show',
-        props.onReadyToShow,
-        (rawHandler) => rawHandler()
-      );
-    }
-
-    if (props.showDevTools) {
-      this.window.webContents.openDevTools();
-    }
-
-    configureSize.call(this, props);
-    configurePosition.call(this, props);
-    configureFile.call(this, props);
-
-    if (this.parentWindow) {
-      this.window.setParentWindow(this.parentWindow);
-    }
-
     return true;
   }
 
   commitMount(
     newProps      : Object,
   ) {
+    if (newProps.onReadyToShow !== undefined) {
+      configureWrappedEventHandler(
+        this.window,
+        this.attachedHandlers,
+        'onReadyToShow',
+        'ready-to-show',
+        newProps.onReadyToShow,
+        (rawHandler) => rawHandler()
+      );
+    }
+
+    if (newProps.showDevTools) {
+      this.window.webContents.openDevTools();
+    }
+
+    configureSize.call(this, newProps);
+    configurePosition.call(this, newProps);
+    configureFile.call(this, newProps);
+
     if (newProps.show) {
       this.window.show();
     }
@@ -259,19 +275,12 @@ export default class WindowElement extends BaseElement {
     }
   }
 
-  appendChildBeforeMount(
-    child         : (BaseElement | TextElement)
-  ): void {
-    if (child instanceof WindowElement) {
-      child.parentWindow = this.window;
-    }
-  }
-
   appendChild(
     child         : (BaseElement | TextElement)
   ): void {
     if (child instanceof WindowElement) {
-      child.parentWindow = this.window;
+      this.childWindows.add(child);
+      child.initializeFromParent(this.window);
     }
   }
 
@@ -280,7 +289,8 @@ export default class WindowElement extends BaseElement {
     beforeChild   : (BaseElement | TextElement)
   ): void {
     if (child instanceof WindowElement) {
-      child.parentWindow = this.window;
+      this.childWindows.add(child);
+      child.initializeFromParent(this.window);
     }
   }
 
@@ -288,7 +298,8 @@ export default class WindowElement extends BaseElement {
     child         : (BaseElement | TextElement)
   ): void {
     if (child instanceof WindowElement) {
-      child.parentWindow = null;
+      this.childWindows.delete(child);
+      // I don't think we really care if this happens. The child can do it's own removal.
     }
   }
 

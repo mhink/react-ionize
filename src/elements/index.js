@@ -33,7 +33,7 @@ export function createElectronInstance(
       return new AppElement(props, container);
     }
     case 'window': {
-      return new WindowElement(props, container);
+      return new WindowElement(props, container, context);
     }
     case 'menu': {
       return new MenuElement(props, container);
