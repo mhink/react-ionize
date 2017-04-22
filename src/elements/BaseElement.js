@@ -91,7 +91,8 @@ export default class BaseElement {
   ): void { }
 
   insertBefore(
-    child         : (BaseElement | TextElement)      
+    child         : (BaseElement | TextElement),
+    beforeChild   : (BaseElement | TextElement)
   ): void { }
 
   removeChild(

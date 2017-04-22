@@ -166,7 +166,7 @@ export function commitTextUpdate(
 }
 
 export type HostContext = {|
-  isMenu: boolean,
+  type: ?string
 |};
 
 const DEFAULT_HOST_CONTEXT: HostContext = ({}: any);
@@ -187,7 +187,9 @@ export function getChildHostContext(
   parentHostContext       : HostContext,
   type                    : string,
 ): HostContext {
-  return parentHostContext;
+  return {
+    type
+  };
 }
 
 // Before/after hooks to allow us to manipulate module-specific app state
