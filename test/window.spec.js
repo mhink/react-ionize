@@ -19,8 +19,10 @@ describe('<window />', function() {
       context('during the initial mount', function() {
         context('when true', function() {
           it('the window should immediately become visible', function(done) {
-            const win = ElectronTestUtils.getWindow(0);
-            const show = sinon.stub(win, 'show');
+            let show;
+            ElectronTestUtils.onNewWindow((window) => {
+              show = sinon.stub(window, 'show');
+            });
 
             Ionize.start(
               <window show />,
@@ -34,8 +36,10 @@ describe('<window />', function() {
 
         context('when false', function() {
           it('the window should NOT become visible', function(done) {
-            const win = ElectronTestUtils.getWindow(0);
-            const show = sinon.stub(win, 'show');
+            let show;
+            ElectronTestUtils.onNewWindow((window) => {
+              show = sinon.stub(window, 'show');
+            });
 
             Ionize.start(
               <window />,
@@ -50,8 +54,10 @@ describe('<window />', function() {
         context('when an updated is committed', () => {
           context('when it transitions from FALSE to TRUE', function() {
             it('should cause the window to become visible', function(done) {
-              const win = ElectronTestUtils.getWindow(0);
-              const show = sinon.stub(win, 'show');
+              let show;
+              ElectronTestUtils.onNewWindow((window) => {
+                show = sinon.stub(window, 'show');
+              });
 
               Ionize.chain(
                 <window show={false} />, 
@@ -69,9 +75,12 @@ describe('<window />', function() {
 
           context('when it transitions from TRUE to FALSE', function() {
             it('should cause the window to become hidden', function(done) {
-              const win = ElectronTestUtils.getWindow(0);
-              const show = sinon.stub(win, 'show');
-              const hide = sinon.stub(win, 'hide');
+              let show;
+              let hide;
+              ElectronTestUtils.onNewWindow((window) => {
+                show = sinon.stub(window, 'show');
+                hide = sinon.stub(window, 'hide');
+              });
 
               Ionize.chain(
                 <window show={true} />, 
@@ -87,6 +96,84 @@ describe('<window />', function() {
               );
             })
           });
+        });
+      });
+    });
+
+    describe('acceptFirstMouse', function() {
+      context('during the initial mount', function() {
+        context('when true', function () {
+          it('the window should get acceptFirstMouse=true passed in the options', function (done) {
+            let testWindow;
+            ElectronTestUtils.onNewWindow((window) => {
+              testWindow = window;
+            });
+
+            Ionize.start(
+              <window acceptFirstMouse />,
+              () => {
+                expect(testWindow.options.acceptFirstMouse).to.be.true;
+                done();
+              }
+            );
+          });
+        });
+
+        context('when false', function () {
+          it('the window should get acceptFirstMouse=false passed in the options', function (done) {
+            let testWindow;
+            ElectronTestUtils.onNewWindow((window) => {
+              testWindow = window;
+            });
+
+            Ionize.start(
+              <window />,
+              () => {
+                expect(testWindow.options.acceptFirstMouse).to.be.false;
+                done();
+              }
+            );
+          });
+        });
+      });
+
+      context('when an updated is committed', () => {
+        context('when it transitions from FALSE to TRUE', function() {
+          it('should warn the user that this is not a valid operation', function(done) {
+            const warn = sinon.stub(console, 'warn');
+
+            Ionize.chain(
+              <window />,
+              () => {
+                expect(warn).not.to.have.been.called;
+              },
+              <window acceptFirstMouse />,
+              () => {
+                expect(warn).to.have.been.calledOnce;
+                console.warn.restore();
+                done();
+              }
+            );
+          })
+        });
+
+        context('when it transitions from TRUE to FALSE', function() {
+          it('should warn the user that this is not a valid operation', function(done) {
+            const warn = sinon.stub(console, 'warn');
+
+            Ionize.chain(
+              <window acceptFirstMouse />,
+              () => {
+                expect(warn).not.to.have.been.called;
+              },
+              <window />,
+              () => {
+                expect(warn).to.have.been.calledOnce;
+                console.warn.restore();
+                done();
+              }
+            );
+          })
         });
       });
     });
