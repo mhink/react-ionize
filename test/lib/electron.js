@@ -24,6 +24,12 @@ class ElectronApp extends EventEmitter {
 export let app = new ElectronApp();
 
 class _BrowserWindow {
+  options: any;
+
+  constructor(options: any) {
+    this.options = options;
+  }
+
   show() {}
   hide() {}
   on() {}
@@ -36,20 +42,20 @@ class _BrowserWindow {
 }
 
 let i_win = 0;
-export let windows = [
-  new _BrowserWindow()
-];
+export let windows = [];
+let onNewWindowHandler: (window: _BrowserWindow) => mixed;
 
-export const BrowserWindow = () => {
-  const rval = windows[i_win];
+export const BrowserWindow = (options: any) => {
+  const newWindow = new _BrowserWindow(options);
 
-  i_win += 1;
-  if (!windows[i_win]) {
-    windows.push(new _BrowserWindow())
+  windows.push(newWindow);
+
+  if (onNewWindowHandler) {
+    onNewWindowHandler(newWindow);
   }
 
-  return rval;
-}
+  return newWindow;
+};
 
 class _Menu {
   _id: number;
@@ -144,10 +150,11 @@ export const MenuItem = (opts: Object) => {
 
 export const ElectronTestUtils = {
   getWindow(i: number) {
-    if (!windows[i]) {
-      windows[i] = new _BrowserWindow();
-    }
     return windows[i];
+  },
+
+  onNewWindow(handler: (window: _BrowserWindow) => mixed) {
+    onNewWindowHandler = handler;
   },
 
   getMenu(i: number) {
@@ -169,9 +176,7 @@ export const ElectronTestUtils = {
     i_win = 0;
     i_menu = 0;
     i_menuItem = 0;
-    windows = [
-      new _BrowserWindow()
-    ];
+    windows = [];
     menus = [
       new _Menu(0)
     ];
